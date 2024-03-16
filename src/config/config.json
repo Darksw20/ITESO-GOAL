@@ -1,0 +1,23 @@
+{
+  "development": {
+    "username": "root",
+    "password": "rootpass",
+    "database": "goal_db",
+    "host": "192.168.64.1",
+    "dialect": "mysql"
+  },
+  "test": {
+    "username": "root",
+    "password": "rootpass",
+    "database": "goal_test_db",
+    "host": "192.168.64.1",
+    "dialect": "mysql"
+  },
+  "production": {
+    "username": "root",
+    "password": "rootpass",
+    "database": "goal_db",
+    "host": "192.168.64.1",
+    "dialect": "mysql"
+  }
+}

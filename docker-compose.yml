@@ -1,0 +1,55 @@
+version: "3.8"
+
+services:
+  nodejs:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - "8080:8080"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    depends_on:
+      mysql:
+        condition: service_healthy
+    environment:
+      - NODE_ENV=development
+    healthcheck:
+      test:
+        - "CMD-SHELL"
+        - "mysqladmin ping -h mysql -uroot -prootpass"
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    command: >
+      sh -c 'if [ "$NODE_ENV" = "production" ]; then
+              npm start;
+            else
+              npm run dev;
+            fi'
+
+  mysql:
+    image: mysql:latest
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpass
+      MYSQL_DATABASE: goal_db
+    ports:
+      - "3306:3306"
+    volumes:
+      - mysql_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "mysql", "-uroot", "-prootpass"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+    networks:
+      - goal
+
+volumes:
+  mysql_data:
+
+networks:
+  goal:
