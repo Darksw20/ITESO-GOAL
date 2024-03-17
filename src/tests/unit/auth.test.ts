@@ -1,6 +1,6 @@
 import { describe, expect, test } from "@jest/globals";
 
-import Auth from "../../services/authService";
+import Auth from "../../services/AuthService";
 
 describe("Testing auth file", () => {
 	//que pasa si le pasamos un token que no es valido
