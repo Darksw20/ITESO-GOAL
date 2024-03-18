@@ -1,33 +1,26 @@
 import { Request, Response, NextFunction } from "express";
 import AuthService from "../services/AuthService";
+import JWTService from "../services/JWTService";
+import { USER_ROLES } from "../config/enums";
 
-export const authUser = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const token: string | undefined =
-		typeof req.headers.token === "string" ? req.headers.token : undefined;
+export const authUser = (req: Request, res: Response, next: NextFunction) => {
+  const token = req.headers.jwt;
 
-	if (!token || !AuthService.verifyToken(token)) {
-		return res.status(401).send("Unauthorized");
-	}
-
-	next();
+  if (!token || !AuthService.verifyToken(token as string)) {
+    return res.status(401).send("Unauthorized");
+  }
+  next();
 };
 
-export const authRole = async (
-	req: Request,
-	res: Response,
-	next: NextFunction
-) => {
-	const token: string | undefined =
-		typeof req.headers.token === "string" ? req.headers.token : undefined;
+export const authRole = (role: USER_ROLES[]) => {
+  return async (req: Request, res: Response, next: NextFunction) => {
+    const decodedJWT = JWTService.decodeJWT(req.headers.jwt as string);
+    const userType = decodedJWT.user_type;
 
-	// !AuthService.isAdmin(token)
-	if (!token || !AuthService.verifyToken(token)) {
-		return res.status(401).send("Unauthorized");
-	}
+    if (!role.includes(userType)) {
+      return res.status(401).send("Unauthorized");
+    }
 
-	next();
+    next();
+  };
 };

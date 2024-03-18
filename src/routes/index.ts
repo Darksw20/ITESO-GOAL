@@ -8,7 +8,7 @@ import UserController from "../controllers/UserController";
 
 import { authUser, authRole } from "../middlewares/Auth";
 
-import User from "../models/User";
+import { USER_ROLES } from "../config/enums";
 
 const router = Router();
 
@@ -88,20 +88,15 @@ router.patch("/match/:id", authUser, MatchController.update);
 // delete Match
 router.delete("/match/:id", authUser, MatchController.delete);
 
-router.get("/healthcheck", async (req: any, res: any) => {
-	const user = await User.create({
-		email: "test@test.com",
-		username: "test",
-		password: "password",
-		first_name: "John",
-		last_name: "Doe",
-		birthday: new Date("1990-01-01"),
-		user_type: "admin",
-	});
-	res.status(200).json({
-		message: "Server is running",
-		// user: user.toJSON(),
-	});
-});
+router.get(
+  "/healthcheck",
+  authUser,
+  authRole([USER_ROLES.USER, USER_ROLES.ORGANIZER]),
+  async (req: any, res: any) => {
+    res.status(200).json({
+      message: "Server is running",
+    });
+  }
+);
 
 export default router;
