@@ -3,7 +3,7 @@ import request from "supertest";
 import server from "../../index";
 
 describe("Testing auth endpoint", () => {
-	test("", async () => {
+	test("The healthcheck works", async () => {
 		const response = await request(server).get("/api/healthcheck");
 		expect(response.status).toBe(200);
 		expect(response.body).toEqual({
@@ -11,6 +11,3 @@ describe("Testing auth endpoint", () => {
 		});
 	});
 });
-//que pasa si hago un request con un token valido
-
-//que pasa si hago un request con un token invalido

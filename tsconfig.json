@@ -108,7 +108,8 @@
 	},
 	"include": [
 		"src/**/*.ts",
-		"src/migrations/20240316180608-tables-creation.js"
+		"src/migrations/20240316180608-tables-creation.js",
+		"src/config/config.js"
 	],
 	"exclude": []
 }
