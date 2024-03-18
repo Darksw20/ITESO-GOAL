@@ -1,12 +1,12 @@
 import { Router } from "express";
 
-import AuthController from "../controllers/authController";
+import AuthController from "../controllers/AuthController";
 import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
 import TeamController from "../controllers/TeamController";
 import UserController from "../controllers/UserController";
 
-import { authUser, authRole } from "../middlewares/Auth";
+import { authUser, authRole } from "../middlewares/Auths";
 
 import User from "../models/User";
 
