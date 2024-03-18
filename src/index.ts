@@ -2,13 +2,13 @@ import express, { Request, Response, NextFunction } from "express";
 import routes from "./routes";
 import dotenv from "dotenv";
 import logger from "morgan";
-import sequelize from "./config/sequelize"; // Import Sequelize instance
-
-dotenv.config();
-
+import sequelize from "./config/sequelize";
+import path from "path";
 const app = express();
 
-const PORT = process.env.PORT || 3000;
+const ENV = process.env.NODE_ENV === "test" ? ".env.testing" : ".env";
+const PORT = process.env.NODE_ENV === "test" ? 3000 : process.env.PORT;
+dotenv.config({ path: path.resolve(__dirname, "..", ENV) });
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));

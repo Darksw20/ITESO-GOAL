@@ -1,7 +1,11 @@
 import { Request, Response, NextFunction } from "express";
-import AuthService from "../services/authService";
+import AuthService from "../services/AuthService";
 
-const auth = (req: Request, res: Response, next: NextFunction) => {
+export const authUser = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
 	const token: string | undefined =
 		typeof req.headers.token === "string" ? req.headers.token : undefined;
 
@@ -12,4 +16,18 @@ const auth = (req: Request, res: Response, next: NextFunction) => {
 	next();
 };
 
-export default auth;
+export const authRole = async (
+	req: Request,
+	res: Response,
+	next: NextFunction
+) => {
+	const token: string | undefined =
+		typeof req.headers.token === "string" ? req.headers.token : undefined;
+
+	// !AuthService.isAdmin(token)
+	if (!token || !AuthService.verifyToken(token)) {
+		return res.status(401).send("Unauthorized");
+	}
+
+	next();
+};
