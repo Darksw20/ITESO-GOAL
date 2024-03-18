@@ -1,9 +1,9 @@
 # ITESO-GOAL
 ## Objetivo
-Realizar el dise駉 y la preparaci髇 del API del proyecto integrador, implementando una estructura MVC.
+Realizar el dise帽o y la preparaci贸n del API del proyecto integrador, implementando una estructura MVC.
 
 # Requerimientos
-Instalaci髇 DOCKER
+Instalaci贸n DOCKER
 Agregar .env
 
 # Inicializar BD
@@ -12,14 +12,14 @@ Agregar .env
 npm i
 ```
 
-- Para configurar IP (Correr ipconfig y copiar Direcci髇 IPv4)
+- Para configurar IP (Correr ipconfig y copiar Direcci贸n IPv4)
 Adaptador de Ethernet Ethernet:
 
-   Sufijo DNS espec韋ico para la conexi髇. . : domain_not_set.invalid
-   Direcci髇 IPv6 . . . . . . . . . . : 
-   Direcci髇 IPv6 temporal. . . . . . : 
-   V韓culo: direcci髇 IPv6 local. . . : 
-   Direcci髇 IPv4. . . . . . . . . . . . . . : 192.168
+   Sufijo DNS espec铆fico para la conexi贸n. . : domain_not_set.invalid
+   Direcci贸n IPv6 . . . . . . . . . . : 
+   Direcci贸n IPv6 temporal. . . . . . : 
+   V铆nculo: direcci贸n IPv6 local. . . : 
+   Direcci贸n IPv4. . . . . . . . . . . . . . : 192.168
 
 - Pegar IP en .env (DB_HOST=)
 
@@ -33,7 +33,7 @@ docker-compose up --build
 Este comando crear el contenedor y requirimeintos para iniciar la BD
 
 # Pruebas
-- Se requiere una aplicac韔n de despliegue de BD (Docker u otros similares)
+- Se requiere una aplicac铆on de despliegue de BD (Docker u otros similares)
 
 # Rutas
 La ruta localhost:PUERTO/api/healthcheck crea un nuevo usuario en la tabla USER
