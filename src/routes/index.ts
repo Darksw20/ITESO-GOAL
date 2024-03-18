@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import AuthController from "../controllers/AuthController";
+import AuthController from "../controllers/authController";
 import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
 import TeamController from "../controllers/TeamController";
