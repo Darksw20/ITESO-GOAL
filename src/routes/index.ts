@@ -6,7 +6,7 @@ import MatchController from "../controllers/MatchController";
 import TeamController from "../controllers/TeamController";
 import UserController from "../controllers/UserController";
 
-import { authUser, authRole } from "../middlewares/Auths";
+import { authUser, authRole } from "../middlewares/Auth";
 
 import User from "../models/User";
 
