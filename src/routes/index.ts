@@ -16,7 +16,7 @@ const router = Router();
 router.post("/auth", AuthController.login);
 
 // register User
-router.post("/register", UserController.register);
+router.post("/register", AuthController.register);
 
 // logout
 router.post("/logout", authUser, AuthController.logout);
