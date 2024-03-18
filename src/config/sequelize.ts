@@ -2,7 +2,9 @@ import { Sequelize } from "sequelize-typescript";
 import dotenv from "dotenv";
 import path from "path";
 
-dotenv.config();
+const ENV = process.env.NODE_ENV === "test" ? ".env.testing" : ".env";
+
+dotenv.config({ path: path.resolve(__dirname, "../..", ENV) });
 
 const sequelize = new Sequelize({
 	database: process.env.DB_NAME,

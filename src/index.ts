@@ -4,11 +4,10 @@ import dotenv from "dotenv";
 import logger from "morgan";
 import sequelize from "./config/sequelize";
 import path from "path";
-
-const PORT = process.env.PORT || 3000;
-const ENV = process.env.NODE_ENV === "test" ? ".env.testing" : ".env";
-
 const app = express();
+
+const ENV = process.env.NODE_ENV === "test" ? ".env.testing" : ".env";
+const PORT = process.env.NODE_ENV === "test" ? 3000 : process.env.PORT;
 dotenv.config({ path: path.resolve(__dirname, "..", ENV) });
 
 app.use(express.json());

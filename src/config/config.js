@@ -12,7 +12,7 @@ const SQL_CONFIG = {
   host: process.env.DB_HOST,
   dialect: "mysql",
 };
-console.log("SQL_CONFIG", SQL_CONFIG);
+
 module.exports = {
   development: SQL_CONFIG,
   test: SQL_CONFIG,

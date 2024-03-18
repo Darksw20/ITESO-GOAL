@@ -98,9 +98,9 @@ router.get("/healthcheck", async (req: any, res: any) => {
 		birthday: new Date("1990-01-01"),
 		user_type: "admin",
 	});
-	console.log("User created:", user.toJSON());
 	res.status(200).json({
 		message: "Server is running",
+		// user: user.toJSON(),
 	});
 });
 
