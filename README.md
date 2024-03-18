@@ -6,6 +6,19 @@ Realizar el diseño y la preparación del API del proyecto integrador, implement
 Instalación DOCKER
 Agregar .env
 
+1. **Crear archivo .env**: En la raíz del proyecto, crea un archivo llamado `.env`. En este archivo, define las siguientes variables de entorno:
+
+   ```plaintext
+   NODE_ENV=development 
+   PORT=8080
+   DB_HOST=192.168.64.1
+   DB_PORT=3306
+   DB_NAME=goal_db
+   DB_USER=root
+   DB_PASSWORD=rootpass
+   ```
+   Estas variables se utilizan para configurar el puerto en el que se ejecutará el servidor, modo dev o produccion, y configuración de docker.
+
 # Inicializar BD
 - run 
 ```bash
