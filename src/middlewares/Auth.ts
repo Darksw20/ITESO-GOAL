@@ -18,7 +18,7 @@ export const authRole = (role: USER_ROLES[]) => {
     const userType = decodedJWT.user_type;
 
     if (!role.includes(userType)) {
-      return res.status(401).send("Unauthorized");
+      return res.status(403).send("Unauthorized");
     }
 
     next();
