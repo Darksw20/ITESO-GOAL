@@ -3,6 +3,9 @@ import Match from "./Match";
 
 @Table({ tableName: "events" })
 class Event extends Model {
+	@Column({ primaryKey: true, autoIncrement: true })
+    id!: number;
+
 	@HasMany(() => Match)
 	matches!: Match[];
 
