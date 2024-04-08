@@ -4,6 +4,8 @@ import dotenv from "dotenv";
 import logger from "morgan";
 import sequelize from "./config/sequelize";
 import path from "path";
+import swaggerSpec from "./swagger";
+import SwaggerUi from "swagger-ui-express";
 const app = express();
 
 const ENV = process.env.NODE_ENV === "test" ? ".env.testing" : ".env";
@@ -15,6 +17,9 @@ app.use(express.urlencoded({ extended: true }));
 app.use(logger("dev"));
 
 app.use("/api", routes);
+
+//Swager UI
+app.use('/api-doc', SwaggerUi.serve, SwaggerUi.setup(swaggerSpec))
 
 const server = app.listen(PORT, async () => {
 	console.log(`Server is running on port ${PORT}`);
