@@ -19,13 +19,29 @@ router.post("/auth", AuthController.login);
  * /api/auth:
  *  post:
  *    summary: Login User
+ *    description: Authenticate a user with email and password.
  *    security:
  *      - apiAuth: []
  *    tags:
  *      - User
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                format: email
+ *                example: ricardog.navi20@gmail.com
+ *              password:
+ *                type: string
+ *                format: password
+ *                example: Pruebas123456
  *    responses:
  *      200:
- *        description: User login succesfull
+ *        description: User login successful
  */
 
 // register User
@@ -34,14 +50,40 @@ router.post("/register", AuthController.register);
  * @swagger
  * /api/register:
  *  post:
- *    summary: Create User
+ *    summary: Register User
+ *    description: Register a new user with email, password, first name, last name, and birthday.
  *    security:
  *      - apiAuth: []
  *    tags:
  *      - User
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              email:
+ *                type: string
+ *                format: email
+ *                example: ricardog.navi21@gmail.com
+ *              password:
+ *                type: string
+ *                format: password
+ *                example: Pruebas123456
+ *              first_name:
+ *                type: string
+ *                example: Ricardo
+ *              last_name:
+ *                type: string
+ *                example: Navarro
+ *              birthday:
+ *                type: string
+ *                format: date
+ *                example: "2022-03-15"
  *    responses:
  *      200:
- *        description: User created succesfully
+ *        description: User created successfully
  */
 
 // logout
@@ -58,6 +100,12 @@ router.post("/logout", authUser, AuthController.logout);
  *    responses:
  *      200:
  *        description: User session closed
+ *    parameters:
+ *      - name: jwt
+ *        in: header
+ *        description: JWT token to authorize requests
+ *        required: true
+ *        type: string
  */
 
 // create User
@@ -413,14 +461,14 @@ router.delete("/match/:id", authUser, MatchController.delete);
  */
 
 router.get(
-  "/healthcheck",
-  authUser,
-  authRole([USER_ROLES.USER, USER_ROLES.ORGANIZER]),
-  async (req: any, res: any) => {
-    res.status(200).json({
-      message: "Server is running",
-    });
-  }
+	"/healthcheck",
+	authUser,
+	authRole([USER_ROLES.USER, USER_ROLES.ORGANIZER]),
+	async (req: any, res: any) => {
+		res.status(200).json({
+			message: "Server is running",
+		});
+	}
 );
 
 export default router;
