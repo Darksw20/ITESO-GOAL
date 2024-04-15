@@ -1,4 +1,4 @@
-import { describe, expect, test } from "@jest/globals";
+import { describe, expect, test, beforeAll, afterAll } from "@jest/globals";
 import { agent } from "supertest";
 import server from "../../index";
 import sequelize from "../../config/sequelize"; // Import your Sequelize instance

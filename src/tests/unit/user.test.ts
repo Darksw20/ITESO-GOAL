@@ -5,7 +5,7 @@ import Event from "../../models/Event";
 // Mocking Event model methods
 jest.mock("../../models/Event");
 
-describe("Testing EventService", () => {
+describe("Testing UserService", () => {
 	describe("create", () => {
 		// test("With valid data, should create event", async () => {
 		// 	const newDate = new Date();

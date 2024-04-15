@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import routes from "./routes";
 import dotenv from "dotenv";
 import logger from "morgan";

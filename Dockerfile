@@ -21,6 +21,10 @@ RUN npm install -g nodemon
 # Build TypeScript files
 RUN npm run build
 
+# Create coverage-report directory and make it writable
+RUN mkdir -p /app/coverage-report
+RUN chmod -R 777 /app/coverage-report
+
 # Expose the port on which the application will run
 EXPOSE 8080
 
