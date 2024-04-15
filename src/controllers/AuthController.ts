@@ -21,6 +21,11 @@ export default {
 
 		try {
 			const response = await Auth.login(email, password);
+
+			if (response.error) {
+				return res.status(400).json({ message: response.error });
+			}
+
 			return res.json(response);
 		} catch (err: any) {
 			console.log(err);
