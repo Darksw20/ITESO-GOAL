@@ -18,9 +18,12 @@ export default {
 				birthday,
 				user_type,
 			});
+
+			const { password: _, ...userWithoutPassword } = user.toJSON();
+
 			return {
 				id: user.id,
-				user: user,
+				user: userWithoutPassword,
 			};
 		} catch (e) {
 			console.error(e);
