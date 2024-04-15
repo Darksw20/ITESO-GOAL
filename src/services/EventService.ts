@@ -1,132 +1,123 @@
 import Event from "../models/Event";
 
 export default {
-    create: async (
-        name: string,
-        start_date: Date,
-        end_date: Date,
-        ubication: string,
-        allowed_number: number
-    ) => {
-    try {
+	create: async (
+		name: string,
+		start_date: Date,
+		end_date: Date,
+		ubication: string,
+		allowed_number: number
+	) => {
+		try {
+			const event = await Event.create({
+				name,
+				start_date,
+				end_date,
+				ubication,
+				allowed_number,
+			});
 
-        const event = await Event.create({
-            name,
-            start_date,
-            end_date,
-            ubication,
-            allowed_number
-        });
+			return {
+				id: event.id,
+				event: event,
+			};
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "Event not registered",
+			};
+		}
+	},
+	find: async (id?: number) => {
+		if (id) {
+			const event = await Event.findByPk(id);
 
-        return {
-            id: event.id,
-            event: event.toJSON(),
-        };
-    } catch (e) {
-        console.error(e);
-    }
-    return {
-        error: "Event not registered",
-    };
-    },
-    find: async (
-        id?: number
-    ) => {
-        try {
-            if (id) {
-                // Si se proporciona un id, buscar un evento específico
-                const event = await Event.findByPk(id);
-    
-                if (!event) {
-                    return {
-                        error: "Event not found",
-                    };
-                }
-    
-                return {
-                    event: event.toJSON(),
-                };
-            } else {
-                // Si no se proporciona un id, traer todos los eventos
-                const events = await Event.findAll();
-    
-                if (!events || events.length === 0) {
-                    return {
-                        error: "No events found",
-                    };
-                }
-    
-                return {
-                    events: events.toJSON(),
-                };
-            }
-        } catch (e) {
-            console.error(e);
-            return {
-                error: "An error occurred while fetching events",
-            };
-        }
-    },
-    update: async (
-        id: number,
-        name?: string,
-        start_date?: Date,
-        end_date?: Date,
-        ubication?: string,
-        allowed_number?: number
-    ) => {
-    
-        try {
-            const event = await Event.findByPk(id);
-    
-            if (!event) {
-                return {
-                    error: "Event not found",
-                };
-            }
+			if (!event) {
+				return {
+					error: "Event not found",
+				};
+			}
 
-            event.name = name;
-            event.start_date = start_date;
-            event.end_date = end_date;
-            event.ubication = ubication;
-            event.allowed_number = allowed_number;
+			return {
+				event: event,
+			};
+		}
 
-            await event.save();
-    
-            return {
-                message: "Even Updated succesfully",
-                event: event
-            };
-        } catch (e) {
-            console.error(e);
-            return {
-                error: "An error occurred while updating event"
-            };
-        }
-    },
-    delete: async (
-        id: number
-    ) => {
-    
-        try {
-            const event = await Event.findByPk(id);
-    
-            if (!event) {
-                return {
-                    error: "Event not found",
-                };
-            }
+		return {
+			events: await Event.findAll(),
+		};
+		// try {
+		// } catch (e) {
+		// 	console.error(e);
+		// 	return {
+		// 		error: "An error occurred while fetching events",
+		// 	};
+		// }
+	},
+	update: async (
+		id: number,
+		name?: string,
+		start_date?: Date,
+		end_date?: Date,
+		ubication?: string,
+		allowed_number?: number
+	) => {
+		try {
+			// Find the event by primary key
+			const event = await Event.findByPk(id);
 
-            await event.destroy();
+			// Check if the event exists
+			if (!event) {
+				return {
+					error: "Event not found",
+				};
+			}
 
-            return {
-                message: "Event deleted successfully"
-            };
-        } catch (e) {
-            console.error(e);
-            return {
-                error: "An error occurred while deleting event",
-            };
-        }
-    },
+			// Prepare update data
+			const updateData = {
+				name: name || event.name,
+				start_date: start_date || event.start_date,
+				end_date: end_date || event.end_date,
+				ubication: ubication || event.ubication,
+				allowed_number: allowed_number || event.allowed_number,
+			};
+
+			// Update the event
+			await event.update(updateData);
+
+			return {
+				status: 200,
+				message: "Event updated successfully",
+				event: event.toJSON(),
+			};
+		} catch (error) {
+			console.error(error);
+			return {
+				status: 500,
+				error: "An error occurred while updating event",
+			};
+		}
+	},
+	delete: async (id: number) => {
+		try {
+			const event = await Event.findByPk(id);
+
+			if (!event) {
+				return {
+					error: "Event not found",
+				};
+			}
+
+			await event.destroy();
+
+			return {
+				message: "Event deleted successfully",
+			};
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "An error occurred while deleting event",
+			};
+		}
+	},
 };
