@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express from "express";
 import routes from "./routes";
 import dotenv from "dotenv";
 import logger from "morgan";
@@ -19,7 +19,7 @@ app.use(logger("dev"));
 app.use("/api", routes);
 
 //Swager UI
-app.use('/api-doc', SwaggerUi.serve, SwaggerUi.setup(swaggerSpec))
+app.use("/api-doc", SwaggerUi.serve, SwaggerUi.setup(swaggerSpec));
 
 const server = app.listen(PORT, async () => {
 	console.log(`Server is running on port ${PORT}`);

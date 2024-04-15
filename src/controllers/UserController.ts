@@ -1,11 +1,10 @@
 import { Request, Response } from "express";
+import User from "../models/User";
 
 export default {
-	async register(req: Request, res: Response) {
-		res.send("register");
-	},
 	async create(req: Request, res: Response) {
-		res.send("create user");
+		const user = User.create({});
+		res.json(user);
 	},
 	async get(req: Request, res: Response) {
 		res.send("get user");
