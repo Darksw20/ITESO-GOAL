@@ -1,6 +1,5 @@
-import Event from "../services/EventService";
-
 import { Request, Response } from "express";
+import Event from "../services/EventService";
 
 export default {
 	async create(req: Request, res: Response) {

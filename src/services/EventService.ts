@@ -46,13 +46,6 @@ export default {
 		return {
 			events: await Event.findAll(),
 		};
-		// try {
-		// } catch (e) {
-		// 	console.error(e);
-		// 	return {
-		// 		error: "An error occurred while fetching events",
-		// 	};
-		// }
 	},
 	update: async (
 		id: number,
