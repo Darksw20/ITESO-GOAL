@@ -14,7 +14,7 @@ Agregar .env
    ```plaintext
    NODE_ENV=development
    PORT=8080
-   DB_HOST=192.168.64.1
+   DB_HOST=mysql
    DB_PORT=3306
    DB_NAME=goal_db
    DB_USER=root
@@ -29,18 +29,6 @@ Agregar .env
 ```bash
 npm i
 ```
-
-- Para configurar IP (Correr ipconfig y copiar Dirección IPv4)
-```bash
-   Adaptador de Ethernet Ethernet:
-   Sufijo DNS específico para la conexión. . : domain_not_set.invalid
-   Dirección IPv6 . . . . . . . . . . :
-   Dirección IPv6 temporal. . . . . . :
-   Vínculo: dirección IPv6 local. . . :
-   Dirección IPv4. . . . . . . . . . . . . . : 192.168
-```
-
-- Pegar IP en .env (DB_HOST=)
 
 - Para levantar db(se requiere docker abierto e instalado) ejecutar:
 ```bash

@@ -183,6 +183,30 @@ router.post("/event", authUser, EventController.create);
  *      - apiAuth: []
  *    tags:
  *      - Event
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *                example: Ricardo
+ *              start_date:
+ *                type: string
+ *                format: date
+ *                example: "2022-03-15"
+ *              end_date:
+ *                type: string
+ *                format: date
+ *                example: "2022-03-15"
+ *              ubication:
+ *                type: string
+ *                example: Cancha Local
+ *              allowed_number:
+ *                type: number
+ *                example: 12
  *    responses:
  *      200:
  *        description: Event created succesfully
@@ -215,6 +239,13 @@ router.get("/event/:id", authUser, EventController.get);
  *      - apiAuth: []
  *    tags:
  *      - Event
+ *    parameters:
+ *      - in: query
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: number
+ *          example: 198
  *    responses:
  *      200:
  *        description: Event found
@@ -231,6 +262,37 @@ router.patch("/event/:id", authUser, EventController.update);
  *      - apiAuth: []
  *    tags:
  *      - Event
+ *    parameters:
+ *      - in: query
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: number
+ *          example: 198
+ *    requestBody:
+ *      required: true
+ *      content:
+ *        application/json:
+ *          schema:
+ *            type: object
+ *            properties:
+ *              name:
+ *                type: string
+ *                example: Ricardo
+ *              start_date:
+ *                type: string
+ *                format: date
+ *                example: "2022-03-15"
+ *              end_date:
+ *                type: string
+ *                format: date
+ *                example: "2022-03-15"
+ *              ubication:
+ *                type: string
+ *                example: Cancha Local
+ *              allowed_number:
+ *                type: number
+ *                example: 12
  *    responses:
  *      200:
  *        description: Event modified
@@ -247,6 +309,13 @@ router.delete("/event/:id", authUser, EventController.delete);
  *      - apiAuth: []
  *    tags:
  *      - Event
+ *    parameters:
+ *      - in: query
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: number
+ *          example: 198
  *    responses:
  *      200:
  *        description: Event deleted
@@ -263,6 +332,13 @@ router.get("/event/:id/teams", authUser, EventController.getTeams);
  *      - apiAuth: []
  *    tags:
  *      - Event
+ *    parameters:
+ *      - in: query
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: number
+ *          example: 198
  *    responses:
  *      200:
  *        description: Teams found
@@ -279,6 +355,13 @@ router.get("/event/:id/matches", authUser, EventController.getMatches);
  *      - apiAuth: []
  *    tags:
  *      - Event
+ *    parameters:
+ *      - in: query
+ *        name: id
+ *        required: true
+ *        schema:
+ *          type: number
+ *          example: 198
  *    responses:
  *      200:
  *        description: Matches found
