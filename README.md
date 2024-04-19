@@ -36,7 +36,7 @@ npm i
 - Para el sistema ejecutar:
 
 ```bash
-docker-compose build // Este comando crear el contenedor y requirimeintos para iniciar la BD
+docker-compose --profile app build // Este comando crear el contenedor y requirimeintos para iniciar la BD
 docker-compose --profile app up
 ```
 
