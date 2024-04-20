@@ -2,8 +2,6 @@ import User from "../services/UserService";
 import * as AWS from "aws-sdk";
 import * as fs from "fs";
 
-const BUCKET_NAME = process.env.BUCKET_NAME;
-
 const s3 = new AWS.S3({
 	accessKeyId: process.env.ACCESS_KEY_ID,
 	secretAccessKey: process.env.SECRET_ACCESS_KEY,
@@ -38,12 +36,14 @@ const uploadFileToS3 = async (
 };
 
 export default {
-	uploadImage: async (id: number, imagePath: string) => {
+	uploadImage: async (id: number, imagePath: string, ext: string) => {
 		const { user } = await User.find(id);
 		const date = new Date();
 		const BUCKET_NAME = process.env.BUCKET_NAME ?? "";
-		const key = `profile-image-${id}-${user?.email}-${date.toISOString()}`; // Nombre con el que se guardará en S3
-
+		const key = `profile-image-${id}-${
+			user?.email
+		}-${date.toISOString()}.${ext}`;
+		console.log("WEEEE", imagePath, BUCKET_NAME, key);
 		return uploadFileToS3(imagePath, BUCKET_NAME, key);
 	},
 };

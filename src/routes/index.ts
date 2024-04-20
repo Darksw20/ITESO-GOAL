@@ -5,12 +5,13 @@ import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
 import TeamController from "../controllers/TeamController";
 import UserController from "../controllers/UserController";
+import multer from "multer";
 
 import { authUser, authRole } from "../middlewares/Auth";
-
 import { USER_ROLES } from "../config/enums";
 
 const router = Router();
+const upload = multer({ dest: "uploads/" });
 
 // login
 router.post("/auth", AuthController.login);
@@ -157,7 +158,12 @@ router.patch("/user/:id", authUser, UserController.update);
  */
 
 // Add User Image
-router.patch("/user/:id/profile-image", authUser, UserController.uploadImage);
+router.patch(
+	"/user/:id/profile-image",
+	authUser,
+	upload.single("img"),
+	UserController.uploadImage
+);
 /**
  * @swagger
  * /api/user/:id:

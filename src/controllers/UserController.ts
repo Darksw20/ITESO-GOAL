@@ -101,10 +101,12 @@ export default {
 	},
 	async uploadImage(req: Request, res: Response) {
 		const userId = Number(req.params.id);
-		const { img } = req.body;
+		console.log(req.file);
+		console.log(req.body);
+		const { path } = req.file as { path: string };
 
 		try {
-			const response = await Aws.uploadImage(userId, img);
+			const response = await Aws.uploadImage(userId, path, "jpg");
 
 			if ((response as { error: string }).error)
 				return res.status(404).json(response);
