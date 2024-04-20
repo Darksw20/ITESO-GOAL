@@ -156,6 +156,22 @@ router.patch("/user/:id", authUser, UserController.update);
  *        description: User altered succesfully
  */
 
+// Add User Image
+router.patch("/user/:id/profile-image", authUser, UserController.uploadImage);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  patch:
+ *    summary: Modify User Info
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - User
+ *    responses:
+ *      200:
+ *        description: User altered succesfully
+ */
+
 //delete User
 router.delete("/user/:id", authUser, UserController.delete);
 /**
