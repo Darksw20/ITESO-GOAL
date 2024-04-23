@@ -1,5 +1,6 @@
 import { Router } from "express";
 
+import passport from 'passport';
 import AuthController from "../controllers/AuthController";
 import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
@@ -11,6 +12,19 @@ import { authUser, authRole } from "../middlewares/Auth";
 import { USER_ROLES } from "../config/enums";
 
 const router = Router();
+
+router.get('/auth/google', passport.authenticate('google', { 
+    scope: ['profile', 'email'] 
+}));
+
+router.get('/auth/google/callback',
+    passport.authenticate('google', { 
+        failureRedirect: '/login' 
+    }),
+    (req, res) => {
+      res.redirect('/'); // Enviar a home
+    }
+);
 
 // login
 router.post("/auth", AuthController.login);
