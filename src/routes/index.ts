@@ -5,23 +5,12 @@ import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
 import TeamController from "../controllers/TeamController";
 import UserController from "../controllers/UserController";
-import multer from "multer";
-import path from "path";
 
 import { authUser, authRole } from "../middlewares/Auth";
 import { USER_ROLES } from "../config/enums";
+import { upload } from "../middlewares/Upload";
 
 const router = Router();
-const storage = multer.diskStorage({
-	destination: function (req, file, cb) {
-		cb(null, "uploads/");
-	},
-	filename: function (req, file, cb) {
-		const ext = path.extname(file.originalname);
-		cb(null, file.fieldname + "-" + Date.now() + ext);
-	},
-});
-const upload = multer({ dest: "uploads/" });
 
 // login
 router.post("/auth", AuthController.login);

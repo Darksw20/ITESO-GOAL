@@ -101,8 +101,6 @@ export default {
 	},
 	async uploadImage(req: Request, res: Response) {
 		const userId = Number(req.params.id);
-		console.log(req.file);
-		console.log(req.body);
 		const { path } = req.file as { path: string };
 
 		try {
