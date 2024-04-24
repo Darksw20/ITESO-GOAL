@@ -131,3 +131,4 @@ dist
 
 coverage-report/
 /**/.DS_Store
+uploads/
