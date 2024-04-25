@@ -7,8 +7,8 @@ import TeamController from "../controllers/TeamController";
 import UserController from "../controllers/UserController";
 
 import { authUser, authRole } from "../middlewares/Auth";
-
 import { USER_ROLES } from "../config/enums";
+import { upload } from "../middlewares/Upload";
 
 const router = Router();
 
@@ -142,6 +142,27 @@ router.get("/user/:id", authUser, UserController.get);
 
 // modify User info
 router.patch("/user/:id", authUser, UserController.update);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  patch:
+ *    summary: Modify User Info
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - User
+ *    responses:
+ *      200:
+ *        description: User altered succesfully
+ */
+
+// Add User Image
+router.patch(
+	"/user/:id/profile-image",
+	authUser,
+	upload.single("img"),
+	UserController.uploadImage
+);
 /**
  * @swagger
  * /api/user/:id:

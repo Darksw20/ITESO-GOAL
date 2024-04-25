@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import User from "../services/UserService";
+import Aws from "../services/AwsService";
 
 export default {
 	async create(req: Request, res: Response) {
@@ -91,6 +92,22 @@ export default {
 			const response = await User.delete(userId);
 
 			if (response.error) return res.status(404).json(response);
+
+			return res.json(response);
+		} catch (err: any) {
+			console.log(err);
+			return res.status(500).json({ message: err.message });
+		}
+	},
+	async uploadImage(req: Request, res: Response) {
+		const userId = Number(req.params.id);
+		const { path } = req.file as { path: string };
+
+		try {
+			const response = await Aws.uploadImage(userId, path, "jpg");
+
+			if ((response as { error: string }).error)
+				return res.status(404).json(response);
 
 			return res.json(response);
 		} catch (err: any) {
