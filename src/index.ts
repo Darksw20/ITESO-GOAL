@@ -6,7 +6,7 @@ import path from "path";
 import swaggerSpec from "./swagger";
 import SwaggerUi from "swagger-ui-express";
 
-import { googleAuth } from './middlewares/Auth';
+import { googleAuth } from './middlewares/google-auth';
 
 const app = express();
 

@@ -1,6 +1,7 @@
 import { Router } from "express";
 
 import passport from 'passport';
+
 import AuthController from "../controllers/AuthController";
 import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
@@ -13,16 +14,16 @@ import { USER_ROLES } from "../config/enums";
 
 const router = Router();
 
-router.get('/auth/google', passport.authenticate('google', { 
+router.get('/google', passport.authenticate('google', { 
     scope: ['profile', 'email'] 
 }));
 
-router.get('/auth/google/callback',
+router.get('/google/callback',
     passport.authenticate('google', { 
-        failureRedirect: '/login' 
+        failureRedirect: '/register' // Enviar a registrar nuevamente
     }),
     (req, res) => {
-      res.redirect('/'); // Enviar a home
+      res.redirect('/api/auth'); // Enviar a home page
     }
 );
 
