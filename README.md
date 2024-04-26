@@ -14,7 +14,9 @@ Agregar .env
    ```plaintext
    NODE_ENV=development
    PORT=8080
-   DB_HOST=192.168.64.1
+   JWT_SECRET=secret
+
+   DB_HOST=mysql
    DB_PORT=3306
    DB_NAME=goal_db
    DB_USER=root
@@ -26,31 +28,32 @@ Agregar .env
 # Inicializar BD
 
 - Instalar dependencias
+
 ```bash
 npm i
 ```
 
-- Para configurar IP (Correr ipconfig y copiar Dirección IPv4)
-```bash
-   Adaptador de Ethernet Ethernet:
-   Sufijo DNS específico para la conexión. . : domain_not_set.invalid
-   Dirección IPv6 . . . . . . . . . . :
-   Dirección IPv6 temporal. . . . . . :
-   Vínculo: dirección IPv6 local. . . :
-   Dirección IPv4. . . . . . . . . . . . . . : 192.168
-```
+- Para el sistema ejecutar:
 
-- Pegar IP en .env (DB_HOST=)
-
-- Para levantar db(se requiere docker abierto e instalado) ejecutar:
 ```bash
-docker-compose up --build // Este comando crear el contenedor y requirimeintos para iniciar la BD
+docker-compose --profile app build // Este comando crear el contenedor y requirimeintos para iniciar la BD
+docker-compose --profile app up
 ```
 
 # Pruebas
 
-- Se requiere una aplicacíon de despliegue de BD (Docker u otros similares)
+- Una vez compilada la app
 
-# Rutas
+```bash
+docker-compose build // Este comando crear el contenedor y requirimeintos para iniciar la BD
+docker-compose --profile test up
+```
 
-La ruta localhost:PUERTO/api/healthcheck crea un nuevo usuario en la tabla USER
+# Coverage
+
+- Una vez compilada la app
+
+```bash
+docker-compose build // Este comando crear el contenedor y requirimeintos para iniciar la BD
+docker-compose --profile coverage up
+```

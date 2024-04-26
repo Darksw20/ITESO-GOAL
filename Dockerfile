@@ -19,7 +19,7 @@ RUN npm install
 RUN npm install -g nodemon
 
 # Build TypeScript files
-RUN npm run build
+RUN NODE_OPTIONS="--max-old-space-size=4096" npm run build
 
 # Create coverage-report directory and make it writable
 RUN mkdir -p /app/coverage-report
