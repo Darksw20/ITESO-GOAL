@@ -1,5 +1,7 @@
 import { Router } from "express";
 
+import passport from 'passport';
+
 import AuthController from "../controllers/AuthController";
 import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
@@ -11,6 +13,19 @@ import { USER_ROLES } from "../config/enums";
 import { upload } from "../middlewares/Upload";
 
 const router = Router();
+
+router.get('/google', passport.authenticate('google', { 
+    scope: ['profile', 'email'] 
+}));
+
+router.get('/google/callback',
+    passport.authenticate('google', { 
+        failureRedirect: '/register' // Enviar a registrar nuevamente
+    }),
+    (req, res) => {
+      res.redirect('/api/auth'); // Enviar a home page
+    }
+);
 
 // login
 router.post("/auth", AuthController.login);
