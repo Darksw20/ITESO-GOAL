@@ -4,7 +4,7 @@ import JWTService from "../services/JWTService";
 import { USER_ROLES } from "../config/enums";
 
 export const authUser = (req: Request, res: Response, next: NextFunction) => {
-	const token = req.headers.jwt;
+	const token = extractToken(req);
 
 	if (!AuthService.verifyToken(token as string)) {
 		return res.status(401).send("Unauthorized");
@@ -23,4 +23,13 @@ export const authRole = (role: USER_ROLES[]) => {
 
 		next();
 	};
+};
+
+const extractToken = (req: Request) => {
+	const tokenType = req.headers.authorization?.split(" ")[0];
+	const token = req.headers.authorization?.split(" ")[1];
+	if (req.headers.authorization && tokenType === "Bearer") {
+		return token;
+	}
+	return "";
 };
