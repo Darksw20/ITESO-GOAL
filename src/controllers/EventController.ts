@@ -103,9 +103,25 @@ export default {
 		}
 	},
 	async getTeams(req: Request, res: Response) {
-		res.send("get event teams");
+		const eventId = Number(req.params.id);
+
+		try {
+			const response = await Event.getTeams(eventId);
+			return res.json(response);
+		} catch (err: any) {
+			console.log(err);
+			return res.status(500).json({ message: err.message });
+		}
 	},
 	async getMatches(req: Request, res: Response) {
-		res.send("get event matches");
+		const eventId = Number(req.params.id);
+
+		try {
+			const response = await Event.getMatches(eventId);
+			return res.json(response);
+		} catch (err: any) {
+			console.log(err);
+			return res.status(500).json({ message: err.message });
+		}
 	},
 };

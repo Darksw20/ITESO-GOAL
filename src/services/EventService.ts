@@ -113,4 +113,44 @@ export default {
 			};
 		}
 	},
+	getTeams: async (id: number) => {
+		try {
+			const event = await Event.findByPk(id, {
+				include: "teams",
+			});
+
+			if (!event) {
+				return {
+					error: "Event not found",
+				};
+			}
+
+			return event;
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "An error occurred while fetching teams",
+			};
+		}
+	},
+	getMatches: async (id: number) => {
+		try {
+			const event = await Event.findByPk(id, {
+				include: "matches",
+			});
+
+			if (!event) {
+				return {
+					error: "Event not found",
+				};
+			}
+
+			return event;
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "An error occurred while fetching matches",
+			};
+		}
+	},
 };
