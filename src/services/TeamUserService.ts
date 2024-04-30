@@ -1,10 +1,19 @@
 import UserTeam from "../models/UserTeam";
+import Match from "../models/Match";
 
 export default {
 	create: async (
 		userId: number, teamId: number
 	) => {
 		try {
+			const Matches = await Match.findAll({ where: { $or:[{ fk_local: teamId,fk_visitor: teamId }] } });
+			//if (Matches) {
+				//if (!Matches) {
+					return { error: Matches };
+				//}
+				//return { userTeam: Matches };
+			//}
+
 			const userTeam = await UserTeam.create({
 				fk_user: userId,
 				fk_team: teamId

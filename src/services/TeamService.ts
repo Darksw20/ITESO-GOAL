@@ -25,7 +25,9 @@ export default {
 				};
 			}
 
-			return team;
+			return {
+				team: team,
+			};
 		}
 
 		return {

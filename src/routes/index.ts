@@ -7,6 +7,7 @@ import EventController from "../controllers/EventController";
 import MatchController from "../controllers/MatchController";
 import TeamController from "../controllers/TeamController";
 import UserController from "../controllers/UserController";
+import CourtController from "../controllers/CourtController";
 
 import { authUser, authRole } from "../middlewares/Auth";
 import { USER_ROLES } from "../config/enums";
@@ -494,6 +495,70 @@ router.delete("/match/:id", authUser, MatchController.delete);
  *    responses:
  *      200:
  *        description: User created succesfully
+ */
+
+// create Court
+router.post("/court", authUser, CourtController.create);
+/**
+ * @swagger
+ * /api/user:
+ *  post:
+ *    summary: Create Court
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Court
+ *    responses:
+ *      200:
+ *        description: Court created succesfully
+ */
+
+// get Court info
+router.get("/court/:id", authUser, CourtController.get);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  get:
+ *    summary: Get Court information
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Court
+ *    responses:
+ *      200:
+ *        description: Court found
+ */
+
+// modify Court info
+router.patch("/court/:id", authUser, CourtController.update);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  patch:
+ *    summary: Modify Court Info
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Court
+ *    responses:
+ *      200:
+ *        description: Court altered succesfully
+ */
+
+//delete Court
+router.delete("/court/:id", authUser, CourtController.delete);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  delete:
+ *    summary: Delete Court by ID
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Court
+ *    responses:
+ *      200:
+ *        description: Court removed succesfully
  */
 
 router.get(

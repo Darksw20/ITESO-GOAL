@@ -108,10 +108,7 @@ export default {
 			if (!teamId){
 				return res.status(400).json({ message: "Team Id is requiered" });
 			}
-			if (!userIds){
-				return res.status(400).json({ message: "User Ids are requiered" });
-			}
-			if (!Array.isArray(userIds) || userIds.length === 0){
+			if (!userIds || !Array.isArray(userIds) || userIds.length === 0){
 				return res.status(400).json({ message: "User Ids are requiered" });
 			}
 		} try {
