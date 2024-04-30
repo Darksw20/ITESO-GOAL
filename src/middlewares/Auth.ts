@@ -4,7 +4,8 @@ import JWTService from "../services/JWTService";
 import { USER_ROLES } from "../config/enums";
 
 export const authUser = (req: Request, res: Response, next: NextFunction) => {
-	const token = extractToken(req);
+	const bearerToken = req.headers.authorization ?? "";
+	const token = bearerToken.split(" ")[1];
 
 	if (!AuthService.verifyToken(token as string)) {
 		return res.status(401).send("Unauthorized");
@@ -14,7 +15,9 @@ export const authUser = (req: Request, res: Response, next: NextFunction) => {
 
 export const authRole = (role: USER_ROLES[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
-		const decodedJWT = JWTService.decodeJWT(req.headers.jwt as string);
+		const bearerToken = req.headers.authorization ?? "";
+		const token = bearerToken.split(" ")[1];
+		const decodedJWT = JWTService.decodeJWT(token as string);
 		const userType = decodedJWT.user_type;
 
 		if (!role.includes(userType)) {
@@ -23,13 +26,4 @@ export const authRole = (role: USER_ROLES[]) => {
 
 		next();
 	};
-};
-
-const extractToken = (req: Request) => {
-	const tokenType = req.headers.authorization?.split(" ")[0];
-	const token = req.headers.authorization?.split(" ")[1];
-	if (req.headers.authorization && tokenType === "Bearer") {
-		return token;
-	}
-	return "";
 };
