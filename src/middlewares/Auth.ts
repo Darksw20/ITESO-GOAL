@@ -7,7 +7,7 @@ export const authUser = (req: Request, res: Response, next: NextFunction) => {
 	const bearerToken = req.headers.authorization ?? "";
 	const token = bearerToken.split(" ")[1];
 
-	if (!AuthService.verifyToken(token as string)) {
+	if (!AuthService.verifyToken(token)) {
 		return res.status(401).send("Unauthorized");
 	}
 	next();
@@ -17,7 +17,7 @@ export const authRole = (role: USER_ROLES[]) => {
 	return async (req: Request, res: Response, next: NextFunction) => {
 		const bearerToken = req.headers.authorization ?? "";
 		const token = bearerToken.split(" ")[1];
-		const decodedJWT = JWTService.decodeJWT(token as string);
+		const decodedJWT = JWTService.decodeJWT(token);
 		const userType = decodedJWT.user_type;
 
 		if (!role.includes(userType)) {
