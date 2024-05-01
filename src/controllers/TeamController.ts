@@ -105,11 +105,16 @@ export default {
 		const userIds: number[] = req.body.members;
 		const errors: string[] = [];
 
-		if (!teamId || !userIds || !Array.isArray(userIds) || userIds.length === 0) {
-			if (!teamId){
+		if (
+			!teamId ||
+			!userIds ||
+			!Array.isArray(userIds) ||
+			userIds.length === 0
+		) {
+			if (!teamId) {
 				errors.push("Team Id is required");
 			}
-			if (!userIds || !Array.isArray(userIds) || userIds.length === 0){
+			if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
 				errors.push("User Ids are required");
 			}
 
@@ -128,13 +133,11 @@ export default {
 					errors.push(`User with ID ${userId} not found`);
 					return;
 				}
-        
-        const teamUser = await TeamUser.create(userId,teamId);
-        if (teamUser.error) {
-          errors.push(teamUser.error);
-        }
-				
 
+				const teamUser = await TeamUser.create(userId, teamId, userIds.length);
+				if (teamUser.error) {
+					errors.push(teamUser.error);
+				}
 			});
 
 			if (errors.length > 0) {
