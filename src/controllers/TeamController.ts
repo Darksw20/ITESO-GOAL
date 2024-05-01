@@ -29,11 +29,9 @@ export default {
 		try {
 			const team = await Team.find(id);
 
-			//check if team has error message
-			if ((team as { error: string }).error) {
-				return res
-					.status(404)
-					.json({ message: (team as { error: string }).error });
+			// Check if team has error message
+			if (team && "error" in team) {
+				return res.status(404).json({ message: team.error });
 			}
 
 			return res.json(team);
@@ -87,13 +85,13 @@ export default {
 		try {
 			const teamId = Number(req.params.id);
 			const team = await Team.find(teamId);
-	
+
 			if (!team) {
 				return res.status(404).send("Team not found");
 			}
-	
-			const members = await TeamUser.find(undefined,teamId);
-	
+
+			const members = await TeamUser.find(undefined, teamId);
+
 			return res.status(200).json(members);
 		} catch (error) {
 			console.error("Error fetching team members:", error);
@@ -101,6 +99,8 @@ export default {
 		}
 	},
 	async addMembers(req: Request, res: Response) {
+		//TODO: Check that the
+
 		const teamId = Number(req.params.id);
 		const userIds: number[] = req.body.members;
 		const errors: string[] = [];
@@ -116,26 +116,26 @@ export default {
 			if (errors.length > 0) {
 				return res.status(400).json({ errors });
 			}
-		} try {
+		}
+		try {
 			const team = await Team.find(teamId);
 			if (team.error) {
 				return res.status(500).json({ message: team.error });
 			}
-			const promises = userIds.map(async (userId) => {
+			userIds.map(async (userId) => {
 				const user = await User.find(userId);
 				if (user.error) {
 					errors.push(`User with ID ${userId} not found`);
 					return;
-				} else {
-					const teamUser = await TeamUser.create(userId,teamId);
-					if (teamUser.error) {
-						errors.push(teamUser.error);
-					}
 				}
+        
+        const teamUser = await TeamUser.create(userId,teamId);
+        if (teamUser.error) {
+          errors.push(teamUser.error);
+        }
+				
 
 			});
-
-			await Promise.all(promises);
 
 			if (errors.length > 0) {
 				return res.status(404).json({ errors });
@@ -151,17 +151,23 @@ export default {
 		const teamId = Number(req.params.id);
 		const userIds: number[] = req.body.members;
 
-		if (!teamId || !userIds || !Array.isArray(userIds) || userIds.length === 0) {
-			if (!teamId){
+		if (
+			!teamId ||
+			!userIds ||
+			!Array.isArray(userIds) ||
+			userIds.length === 0
+		) {
+			if (!teamId) {
 				return res.status(400).json({ message: "Team Id is requiered" });
 			}
-			if (!userIds){
+			if (!userIds) {
 				return res.status(400).json({ message: "User Ids are requiered" });
 			}
-			if (!Array.isArray(userIds) || userIds.length === 0){
+			if (!Array.isArray(userIds) || userIds.length === 0) {
 				return res.status(400).json({ message: "User Ids are requiered" });
 			}
-		} try {
+		}
+		try {
 			const team = await Team.find(teamId);
 			if (!team) {
 				return res.status(404).send("Team not found");
@@ -172,10 +178,7 @@ export default {
 					return res.status(404).send(`User with ID ${userId} not found`);
 				}
 
-				const userTeam = await TeamUser.delete(
-					userId,
-					teamId
-				);
+				const userTeam = await TeamUser.delete(userId, teamId);
 				return res.status(200).json({ message: userTeam });
 			});
 			await Promise.all(promises);

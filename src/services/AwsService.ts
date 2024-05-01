@@ -6,20 +6,12 @@ import path from "path";
 
 const ENV = process.env.NODE_ENV === "test" ? ".env.testing" : ".env";
 const paths = path.resolve(__dirname, "../../", ENV);
-console.log("Loading environment variables from:", paths);
 dotenv.config({ path: path.resolve(__dirname, "../../", ENV) });
 
 const ACCESS_KEY_ID = process.env.ACCESS_KEY_ID;
 const SECRET_ACCESS_KEY = process.env.SECRET_ACCESS_KEY;
 const REGION = process.env.REGION;
 const BUCKET_NAME = process.env.BUCKET_NAME;
-
-console.log("AWS S3 configuration:", {
-	ACCESS_KEY_ID,
-	SECRET_ACCESS_KEY,
-	REGION,
-	BUCKET_NAME,
-});
 
 // Validate environment variables
 if (!ACCESS_KEY_ID || !SECRET_ACCESS_KEY || !REGION || !BUCKET_NAME) {

@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import passport from 'passport';
+import passport from "passport";
 
 import AuthController from "../controllers/AuthController";
 import EventController from "../controllers/EventController";
@@ -15,17 +15,21 @@ import { upload } from "../middlewares/Upload";
 
 const router = Router();
 
-router.get('/google', passport.authenticate('google', { 
-    scope: ['profile', 'email'] 
-}));
+router.get(
+	"/google",
+	passport.authenticate("google", {
+		scope: ["profile", "email"],
+	})
+);
 
-router.get('/google/callback',
-    passport.authenticate('google', { 
-        failureRedirect: '/register' // Enviar a registrar nuevamente
-    }),
-    (req, res) => {
-      res.redirect('/api/auth'); // Enviar a home page
-    }
+router.get(
+	"/google/callback",
+	passport.authenticate("google", {
+		failureRedirect: "/register", // Enviar a registrar nuevamente
+	}),
+	(req, res) => {
+		res.redirect("/api/auth"); // Enviar a home page
+	}
 );
 
 // login
