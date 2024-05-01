@@ -20,7 +20,9 @@ export default {
 			const team = await Team.findByPk(id);
 
 			if (!team) {
-				return null;
+				return {
+					error: "Team not found",
+				};
 			}
 
 			return {
