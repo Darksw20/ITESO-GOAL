@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Event from "../services/EventService";
+import Court from "../services/CourtService";
 
 export default {
 	async create(req: Request, res: Response) {
@@ -9,14 +10,18 @@ export default {
 			return res.status(400).json({ message: "Name is requiered" });
 		}
 
-		/*if (!data.start_date || !data.end_date){
+		if (!start_date || !end_date){
 			return res
 				.status(400)
 				.json({ message: "Start and End date are required" });
-		}*/
+		}
 
 		if (!ubication) {
 			return res.status(400).json({ message: "Ubication is required" });
+		} else {
+			const court = await Court.find(ubication);
+
+			if (court.error) return res.status(404).json(court);
 		}
 
 		if (!allowed_number) {

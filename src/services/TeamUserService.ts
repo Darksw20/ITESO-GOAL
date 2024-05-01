@@ -1,10 +1,48 @@
 import UserTeam from "../models/UserTeam";
+import Match from "../models/Match";
+import Event from "../models/Event";
 
 export default {
 	create: async (
 		userId: number, teamId: number
 	) => {
 		try {
+			const max_members = await UserTeam.findAll({ where: { fk_team: teamId } })
+			const localTeams = await Match.findAll({ where: { fk_local: teamId } });
+			for (const match of localTeams) {
+				const eventLocal = await Event.findByPk(match.dataValues.fk_event);
+				console.log('max_members',max_members)
+				if (eventLocal && (eventLocal?.dataValues.allowed_number < max_members.length)) {
+					return {
+						error: `User ${userId} not added, exceeds maximum players`
+					};
+				}
+				const localTeam = await UserTeam.findAll({ where: { fk_user: userId, fk_team:match.dataValues.fk_visitor } });
+				if (localTeam.length > 0) {
+					return {
+						error: `User ${userId} is in opposite team`
+					};
+				}
+			}
+	
+			const visitorTeams = await UserTeam.findAll({ where: { fk_team: teamId } });
+			console.log('max_members',max_members)
+			for (const match of visitorTeams) {
+				const eventVisitor = await Event.findByPk(match.dataValues.fk_event);
+				if (eventVisitor && (eventVisitor?.dataValues.allowed_number < max_members.length)) {
+					return {
+						error: `User ${userId} not added, exceeds maximum players`
+					};
+				}
+
+				const visitorTeam = await UserTeam.findAll({ where: { fk_user: userId, fk_team: match.dataValues.fk_local } });
+				if (visitorTeam.length > 0) {
+					return {
+						error: `User ${userId} is in opposite team`
+					};
+				}
+			}
+
 			const userTeam = await UserTeam.create({
 				fk_user: userId,
 				fk_team: teamId

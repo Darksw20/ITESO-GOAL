@@ -2,21 +2,25 @@ import Match from "../models/Match";
 
 export default {
 	create: async (
-		score_local: number,
-		score_visitor: number,
-		goals_local: number,
-		goals_visitor: number,
 		start_date: Date,
-		end_date: Date
+		end_date: Date,
+		fk_event: number,
+		fk_court: number,
+		fk_local: number,
+		fk_visitor: number
 	) => {
 		try {
 			const match = await Match.create({
-				score_local,
-                score_visitor,
-                goals_local,
-                goals_visitor,
+				score_local: 0,
+                score_visitor: 0,
+                goals_local: 0,
+                goals_visitor: 0,
                 start_date,
-                end_date
+                end_date,
+				fk_event,
+				fk_court,
+				fk_local,
+				fk_visitor
 			});
 
 			return {
@@ -30,13 +34,27 @@ export default {
 			};
 		}
 	},
-	find: async (id?: number) => {
+	find: async (id?: number, eventId?: number) => {
 		if (id) {
 			const match = await Match.findByPk(id);
 
 			if (!match) {
 				return {
 					error: "Match not found",
+				};
+			}
+
+			return {
+				match: match,
+			};
+		}
+
+		if (eventId) {
+			const match = await Match.findAll({ where: { fk_event: eventId } });
+
+			if (!match) {
+				return {
+					error: "Match not found from event",
 				};
 			}
 

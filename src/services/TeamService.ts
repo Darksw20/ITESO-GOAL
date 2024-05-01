@@ -23,7 +23,9 @@ export default {
 				return null;
 			}
 
-			return team;
+			return {
+				team: team,
+			};
 		}
 
 		return {

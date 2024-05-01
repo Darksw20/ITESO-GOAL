@@ -1,29 +1,53 @@
 import { Request, Response } from "express";
 import Match from "../services/MatchService";
+import Event from "../services/EventService";
+import Court from "../services/CourtService";
+import Team from "../services/TeamService";
 
 export default {
 	async create(req: Request, res: Response) {
-		const {score_local,score_visitor,goals_local,goals_visitor,start_date,end_date} = req.body;
+		const {start_date,end_date,fk_event,fk_court,fk_local,fk_visitor} = req.body;
 		
-		if(
-			!score_local||
-			!score_visitor||
-			!goals_local||
-			!goals_visitor||
-			!start_date||
-			!end_date
-		) {
-			return res.status(400).json({ message: "All fields are required" });
+		if(!fk_event) {
+			return res.status(400).json({ message: 'Event Id required' });
+		} else {
+			const event = await Event.find(fk_event);
+			if (event.error) return res.status(404).json(event);
+		}
+
+		if(!fk_court) {
+			return res.status(400).json({ message: 'Court Id required' });
+		} else {
+			const court = await Court.find(fk_court);
+			if (court.error) return res.status(404).json(court);
+		}
+
+		if(fk_local == fk_visitor) {
+			return res.status(400).json({ message: 'Teams need to be different' });
+		}
+
+		if((!fk_local) || (!fk_visitor)) {
+			return res.status(400).json({ message: 'Teams Id required' });
+		} else {
+			const team1 = await Team.find(fk_local);
+			if (team1.error) return res.status(404).json(team1);
+
+			const team2 = await Team.find(fk_visitor);
+			if (team2.error) return res.status(404).json(team2);
+		}
+
+		if(!start_date || !end_date) {
+			return res.status(400).json({ message: 'Start and end date required' });
 		}
 
 		try {
 			const match = await Match.create(
-				score_local,
-				score_visitor,
-				goals_local,
-				goals_visitor,
 				start_date,
-				end_date
+				end_date,
+				fk_event,
+				fk_court,
+				fk_local,
+				fk_visitor
 			);
 			return res.json(match);
 		} catch (err: any) {
