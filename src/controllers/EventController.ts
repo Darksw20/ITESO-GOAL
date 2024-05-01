@@ -18,10 +18,6 @@ export default {
 
 		if (!ubication) {
 			return res.status(400).json({ message: "Ubication is required" });
-		} else {
-			const court = await Court.find(ubication);
-
-			if (court.error) return res.status(404).json(court);
 		}
 
 		if (!allowed_number) {
