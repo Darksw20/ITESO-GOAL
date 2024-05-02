@@ -1,10 +1,14 @@
 import { Model, Column, Table, HasMany } from "sequelize-typescript";
 import Match from "./Match";
+import Team from "./Team";
 
 @Table({ tableName: "events" })
 class Event extends Model {
 	@HasMany(() => Match)
 	matches!: Match[];
+
+	@HasMany(() => Team)
+	teams!: Team[];
 
 	@Column({ allowNull: false })
 	name!: string;
