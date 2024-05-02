@@ -6,7 +6,7 @@ module.exports = {
     await queryInterface.addConstraint("matches", {
       fields: ["fk_event"],
       type: "foreign key",
-      name: "fk_event_constraint",
+      name: "fk_matches_event_constraint",
       references: {
         table: "events",
         field: "id",
@@ -18,7 +18,7 @@ module.exports = {
     await queryInterface.addConstraint("teams", {
       fields: ["fk_event"],
       type: "foreign key",
-      name: "fk_event_constraint",
+      name: "fk_teams_event_constraint",
       references: {
         table: "events",
         field: "id",
