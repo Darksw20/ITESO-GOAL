@@ -873,7 +873,7 @@ module.exports = {
         "updatedAt": "2024-05-02 00:17:42"
       }
     ], {});
-    await queryInterface.bulkInsert('user_teams', [
+    await queryInterface.bulkInsert('user_team', [
       {
         "id": 1,
         "fk_user": 4,
