@@ -102,7 +102,6 @@ export default {
 			const response = await Event.delete(eventId);
 
 			if (response.error) return res.status(404).json(response);
-
 			return res.json(response);
 		} catch (err: any) {
 			console.log(err);
