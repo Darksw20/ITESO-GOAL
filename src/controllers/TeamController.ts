@@ -5,14 +5,18 @@ import TeamUser from "../services/TeamUserService";
 
 export default {
 	async create(req: Request, res: Response) {
-		const { name } = req.body;
+		const { name, eventId } = req.body;
 
 		if (!name) {
 			return res.status(400).json({ message: "Name is required" });
 		}
 
+		if (!eventId) {
+			return res.status(400).json({ message: "Event Id is required" });
+		}
+
 		try {
-			const team = await Team.create(name);
+			const team = await Team.create(name,eventId);
 			return res.json(team);
 		} catch (err: any) {
 			console.log(err);
