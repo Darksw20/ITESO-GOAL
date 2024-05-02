@@ -1,6 +1,8 @@
 import { Request, Response } from "express";
 import Event from "../services/EventService";
 import Court from "../services/CourtService";
+import Team from "../services/TeamService";
+import { CostExplorer } from "aws-sdk";
 
 export default {
 	async create(req: Request, res: Response) {
@@ -10,7 +12,7 @@ export default {
 			return res.status(400).json({ message: "Name is requiered" });
 		}
 
-		if (!start_date || !end_date){
+		if (!start_date || !end_date) {
 			return res
 				.status(400)
 				.json({ message: "Start and End date are required" });
@@ -124,6 +126,77 @@ export default {
 		try {
 			const response = await Event.getMatches(eventId);
 			return res.json(response);
+		} catch (err: any) {
+			console.log(err);
+			return res.status(500).json({ message: err.message });
+		}
+	},
+	async startEvent(req: Request, res: Response) {
+		const teams = req.body.teams;
+		const event = req.body.event;
+
+		const errors: string[] = [];
+
+		try {
+			// Validations
+			if (!teams) {
+				return res.status(400).json({ message: "Teams are required" });
+			}
+			if (!event) {
+				return res.status(400).json({ message: "Event is required" });
+			}
+
+			const eventRes = await Event.find(event);
+			if (eventRes.error) {
+				errors.push(eventRes.error);
+			}
+
+			// Obtener Matches
+			const groupsNum = Math.ceil(teams.length / 4);
+
+			var groups = Array.from({ length: groupsNum }, () => []);
+			let i = 0;
+			for (let team of teams) {
+				groups[i].push(team as never);
+				i++;
+				if (i > groupsNum - 1) {
+					i = 0;
+				}
+			}
+			console.log("groups: ", groups);
+
+			let teamMatches: Array<Array<[number, number]>> = Array.from(
+				{ length: groupsNum },
+				() => []
+			);
+			i = 0;
+			for (const team of groups) {
+				if (team.length == 4) {
+					teamMatches[i].push([team[0], team[1]]);
+					teamMatches[i].push([team[2], team[3]]);
+					teamMatches[i].push([team[0], team[2]]);
+					teamMatches[i].push([team[1], team[3]]);
+					teamMatches[i].push([team[0], team[3]]);
+					teamMatches[i].push([team[1], team[2]]);
+				} else {
+					teamMatches[i].push([team[0], team[1]]);
+					teamMatches[i].push([team[0], team[2]]);
+					teamMatches[i].push([team[1], team[2]]);
+				}
+				i++;
+				if (i > groupsNum - 1) {
+					i = 0;
+				}
+			}
+			console.log("teams: ", teamMatches);
+
+			if (errors.length > 0) {
+				return res.status(400).json({ errors });
+			}
+
+			return res.status(200).json({
+				message: "Matches created successfully",
+			});
 		} catch (err: any) {
 			console.log(err);
 			return res.status(500).json({ message: err.message });
