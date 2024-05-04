@@ -22,6 +22,7 @@ export default {
 			if (!team) {
 				return {
 					error: "Team not found",
+					id
 				};
 			}
 

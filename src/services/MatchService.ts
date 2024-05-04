@@ -1,6 +1,5 @@
 import Match from "../models/Match";
-import Court from "../models/UserTeam";
-import Event from "../models/Event";
+import Court from "../models/Court";
 import { Op, Sequelize, where } from "sequelize";
 
 export default {
@@ -13,40 +12,44 @@ export default {
 		fk_court?: number
 	) => {
 		try {
+			var bussyCourts: number[] = []
 
 			if (!fk_court){
-				
-				const consulta = await Court.findAll({
-					include: [{
-						model: Match,
-						where: {end_date: {[Op.lt]: start_date,},},
-					}],
+				const matchs = await Match.findAll({
 					where: {
-						'$Court.id$': { [Op.ne]: Sequelize.col('Match.id') }
+						[Op.or]: [{start_date: { [Op.between]: [start_date, end_date] }}, {end_date: { [Op.between]: [start_date, end_date] }}]
 					}
-				});
-				/*
-				consulta = await Court.findOne({
-					include: [{
-					model: Match,
-					required: true,
-					where: {
-					end_date: {
-					[Op.lt]: start_date
+				})
+
+				for ( const match of matchs){
+					bussyCourts.push(match.dataValues.fk_court)
+					if ((match.dataValues.fk_local == fk_local) || (match.dataValues.fk_visitor == fk_visitor) || (match.dataValues.fk_local == fk_visitor) || (match.dataValues.fk_visitor == fk_local)){
+						return{
+							error: "One team is busy",
+							start_date,
+							end_date,
+							fk_event,
+							fk_local,
+							fk_visitor,
+							fk_court
+						}
 					}
-					}
-					}]
-					})
-				if (consulta) {
-					fk_court = consulta;
-				} else {
-					return{
-						error: "No courts Available"
-					}
-				}*/
-				return{
-					consulta
 				}
+
+				const courts = await Court.findOne({
+					where: {
+						id: { [Op.notIn]: bussyCourts }
+					}
+				})
+
+				if (!courts){
+					return{
+						error: "No courts available"
+					}
+				}
+
+				console.log("courts: ",courts?.dataValues.id)
+				fk_court = courts?.dataValues.id;
 			}
 
 			const match = await Match.create({
@@ -66,9 +69,6 @@ export default {
 				id: match.id,
 				match: match
 			};
-			
-
-
 
 		} catch (e) {
 			console.error(e);

@@ -1,7 +1,6 @@
 import { Request, Response } from "express";
 import Event from "../services/EventService";
 import Match from "../services/MatchService";
-import Court from "../services/CourtService";
 import Team from "../services/TeamService";
 import { CostExplorer } from "aws-sdk";
 
@@ -131,6 +130,7 @@ export default {
 		const {teams,event} = req.body;
 
 		const errors: string[] = [];
+		const matches: string[] = [];
 
 		try {
 			// Validations
@@ -144,6 +144,21 @@ export default {
 			const eventRes = await Event.find(event);
 			if (eventRes.error) {
 				errors.push(eventRes.error);
+			}
+
+			if (teams.length < 6) {
+				errors.push("To start event, 6 teams are needed")
+			}
+
+			for (const team of teams){
+				const teamRes = await Team.find(team)
+				if (teamRes.error) {
+					errors.push(team,": ",teamRes.error);
+				}
+			}
+			
+			if (errors.length > 0) {
+				return res.status(400).json({ errors });
 			}
 
 			// Obtener Matches
@@ -183,24 +198,39 @@ export default {
 				}
 			}
 
-			//console.log("teams: ", teamMatches);
-			//console.log("event: ", eventRes)
-			for (const teams of teamMatches){
-				const match = await Match.create(
-					eventRes.event?.dataValues.start_date,
-					eventRes.event?.dataValues.end_date,
-					eventRes.event?.dataValues.id,
-					Number(teams[1]),
-					Number(teams[2])
-				);
-			}
+			var start_date = new Date(eventRes.event?.dataValues.start_date);
+			var end_date = new Date(eventRes.event?.dataValues.start_date);
+			end_date.setMinutes(end_date.getMinutes() + 45);
 
-			if (errors.length > 0) {
-				return res.status(400).json({ errors });
+			for (const teams of teamMatches){
+				for ( const match of teams){
+					var matchError = -1;
+					while(matchError == -1){
+						const matchRes = await Match.create(
+							new Date(start_date),
+							new Date(end_date),
+							eventRes.event?.dataValues.id,
+							Number(match[0]),
+							Number(match[1])
+						);
+						if (matchRes.error){
+							console.log(matchRes)
+							end_date.setMinutes(end_date.getMinutes() + 45);
+							start_date.setMinutes(start_date.getMinutes() + 45);
+						} else {
+							matches.push(matchRes.id)
+							matchError = 1;
+							start_date = new Date(eventRes.event?.dataValues.start_date);
+							end_date = new Date(eventRes.event?.dataValues.start_date);
+							end_date.setMinutes(end_date.getMinutes() + 45);
+						}
+					}
+				}
 			}
 
 			return res.status(200).json({
 				message: "Matches created successfully",
+				matches
 			});
 		} catch (err: any) {
 			console.log(err);
