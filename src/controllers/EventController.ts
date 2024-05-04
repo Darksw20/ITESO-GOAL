@@ -1,5 +1,6 @@
 import { Request, Response } from "express";
 import Event from "../services/EventService";
+import Match from "../services/MatchService";
 import Court from "../services/CourtService";
 import Team from "../services/TeamService";
 import { CostExplorer } from "aws-sdk";
@@ -127,8 +128,7 @@ export default {
 		}
 	},
 	async startEvent(req: Request, res: Response) {
-		const teams = req.body.teams;
-		const event = req.body.event;
+		const {teams,event} = req.body;
 
 		const errors: string[] = [];
 
@@ -158,7 +158,6 @@ export default {
 					i = 0;
 				}
 			}
-			console.log("groups: ", groups);
 
 			let teamMatches: Array<Array<[number, number]>> = Array.from(
 				{ length: groupsNum },
@@ -183,7 +182,18 @@ export default {
 					i = 0;
 				}
 			}
-			console.log("teams: ", teamMatches);
+
+			//console.log("teams: ", teamMatches);
+			//console.log("event: ", eventRes)
+			for (const teams of teamMatches){
+				const match = await Match.create(
+					eventRes.event?.dataValues.start_date,
+					eventRes.event?.dataValues.end_date,
+					eventRes.event?.dataValues.id,
+					Number(teams[1]),
+					Number(teams[2])
+				);
+			}
 
 			if (errors.length > 0) {
 				return res.status(400).json({ errors });

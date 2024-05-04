@@ -1,22 +1,61 @@
 import Match from "../models/Match";
+import Court from "../models/UserTeam";
+import Event from "../models/Event";
+import { Op, Sequelize, where } from "sequelize";
 
 export default {
 	create: async (
 		start_date: Date,
 		end_date: Date,
 		fk_event: number,
-		fk_court: number,
 		fk_local: number,
-		fk_visitor: number
+		fk_visitor: number,
+		fk_court?: number
 	) => {
 		try {
+
+			if (!fk_court){
+				
+				const consulta = await Court.findAll({
+					include: [{
+						model: Match,
+						where: {end_date: {[Op.lt]: start_date,},},
+					}],
+					where: {
+						'$Court.id$': { [Op.ne]: Sequelize.col('Match.id') }
+					}
+				});
+				/*
+				consulta = await Court.findOne({
+					include: [{
+					model: Match,
+					required: true,
+					where: {
+					end_date: {
+					[Op.lt]: start_date
+					}
+					}
+					}]
+					})
+				if (consulta) {
+					fk_court = consulta;
+				} else {
+					return{
+						error: "No courts Available"
+					}
+				}*/
+				return{
+					consulta
+				}
+			}
+
 			const match = await Match.create({
 				score_local: 0,
-                score_visitor: 0,
-                goals_local: 0,
-                goals_visitor: 0,
-                start_date,
-                end_date,
+				score_visitor: 0,
+				goals_local: 0,
+				goals_visitor: 0,
+				start_date,
+				end_date,
 				fk_event,
 				fk_court,
 				fk_local,
@@ -25,8 +64,12 @@ export default {
 
 			return {
 				id: match.id,
-				match: match,
+				match: match
 			};
+			
+
+
+
 		} catch (e) {
 			console.error(e);
 			return {
