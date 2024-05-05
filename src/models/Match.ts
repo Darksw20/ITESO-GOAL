@@ -1,4 +1,4 @@
-import { Model, Column, Table, ForeignKey } from "sequelize-typescript";
+import { Model, Column, Table, ForeignKey, BelongsTo } from "sequelize-typescript";
 import Event from "./Event";
 import Court from "./Court";
 import Team from "./Team";
@@ -38,6 +38,9 @@ class Match extends Model {
 	@ForeignKey(() => Team)
 	@Column({ allowNull: false })
 	fk_visitor!: number;
+
+	@BelongsTo(() => Court)
+	court!: Court;
 }
 
 export default Match;

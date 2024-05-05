@@ -1,22 +1,64 @@
 import Match from "../models/Match";
+import Court from "../models/Court";
+import { Op, Sequelize, where } from "sequelize";
 
 export default {
 	create: async (
 		start_date: Date,
 		end_date: Date,
 		fk_event: number,
-		fk_court: number,
 		fk_local: number,
-		fk_visitor: number
+		fk_visitor: number,
+		fk_court?: number
 	) => {
 		try {
+			var bussyCourts: number[] = []
+
+			if (!fk_court){
+				const matchs = await Match.findAll({
+					where: {
+						[Op.or]: [{start_date: { [Op.between]: [start_date, end_date] }}, {end_date: { [Op.between]: [start_date, end_date] }}]
+					}
+				})
+
+				for ( const match of matchs){
+					bussyCourts.push(match.dataValues.fk_court)
+					if ((match.dataValues.fk_local == fk_local) || (match.dataValues.fk_visitor == fk_visitor) || (match.dataValues.fk_local == fk_visitor) || (match.dataValues.fk_visitor == fk_local)){
+						return{
+							error: "One team is busy",
+							start_date,
+							end_date,
+							fk_event,
+							fk_local,
+							fk_visitor,
+							fk_court
+						}
+					}
+				}
+
+				const courts = await Court.findOne({
+					where: {
+						id: { [Op.notIn]: bussyCourts }
+					}
+				})
+
+				if (!courts){
+					return{
+						error: "No courts available"
+					}
+				}
+
+				console.log("courts: ",courts?.dataValues.id)
+				fk_court = courts?.dataValues.id;
+			}
+
 			const match = await Match.create({
 				score_local: 0,
-                score_visitor: 0,
-                goals_local: 0,
-                goals_visitor: 0,
-                start_date,
-                end_date,
+				score_visitor: 0,
+				goals_local: 0,
+				goals_visitor: 0,
+				start_date,
+				end_date,
 				fk_event,
 				fk_court,
 				fk_local,
@@ -25,8 +67,9 @@ export default {
 
 			return {
 				id: match.id,
-				match: match,
+				match: match
 			};
+
 		} catch (e) {
 			console.error(e);
 			return {

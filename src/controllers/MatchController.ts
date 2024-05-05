@@ -45,9 +45,9 @@ export default {
 				start_date,
 				end_date,
 				fk_event,
-				fk_court,
 				fk_local,
-				fk_visitor
+				fk_visitor,
+				fk_court
 			);
 			return res.json(match);
 		} catch (err: any) {
