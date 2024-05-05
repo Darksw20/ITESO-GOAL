@@ -128,6 +128,10 @@ module.exports = {
         type: Sequelize.STRING,
         allowNull: false,
       },
+      fk_event: {
+        type: Sequelize.INTEGER,
+        allowNull: false,
+      },
       createdAt: {
         type: Sequelize.DATE,
         allowNull: false,

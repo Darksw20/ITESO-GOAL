@@ -1,10 +1,11 @@
 import Team from "../models/Team";
 
 export default {
-	create: async (name: string) => {
+	create: async (name: string, eventId: number) => {
 		try {
 			const team = await Team.create({
 				name,
+				fk_event: eventId
 			});
 
 			return team;
