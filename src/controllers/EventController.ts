@@ -237,4 +237,26 @@ export default {
 			return res.status(500).json({ message: err.message });
 		}
 	},
+	async endEvent(req: Request, res: Response) {
+		const { eventId } = req.body;
+
+		try {
+			const response = await Event.update(
+				eventId,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				'Y'
+			);
+
+			if (response.error) return res.status(404).json(response);
+
+			return res.json(response);
+		} catch (err: any) {
+			console.log(err);
+			return res.status(500).json({ message: err.message });
+		}
+	}
 };

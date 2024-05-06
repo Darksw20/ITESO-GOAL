@@ -1,4 +1,6 @@
+import { where } from "sequelize";
 import Event from "../models/Event";
+import Match from "../models/Match";
 
 export default {
 	create: async (
@@ -53,36 +55,48 @@ export default {
 		start_date?: Date,
 		end_date?: Date,
 		ubication?: string,
-		allowed_number?: number
+		allowed_number?: number,
+		end?: string
 	) => {
 		try {
-			// Find the event by primary key
 			const event = await Event.findByPk(id);
-
-			// Check if the event exists
 			if (!event) {
 				return {
 					error: "Event not found",
 				};
 			}
 
-			// Prepare update data
-			const updateData = {
-				name: name || event.name,
-				start_date: start_date || event.start_date,
-				end_date: end_date || event.end_date,
-				ubication: ubication || event.ubication,
-				allowed_number: allowed_number || event.allowed_number,
-			};
-
-			// Update the event
-			await event.update(updateData);
-
-			return {
-				status: 200,
-				message: "Event updated successfully",
-				event: event.toJSON(),
-			};
+			if(!end){
+				const updateData = {
+					name: name || event.name,
+					start_date: start_date || event.start_date,
+					end_date: end_date || event.end_date,
+					ubication: ubication || event.ubication,
+					allowed_number: allowed_number || event.allowed_number,
+				};
+	
+				await event.update(updateData);
+	
+				return {
+					status: 200,
+					message: "Event updated successfully",
+					event: event.toJSON(),
+				};
+			} else {
+				const matches = await Match.findAll({where: {fk_event: id}})
+				if (!matches){
+					return{
+						error: "Event not started"
+					}
+				} else {
+					// Se tiene duda que se hara al termianr event, no existe columna para status
+					// Como se calcula score
+					return{
+						status: 200,
+						message: "Event ended"
+					}
+				}
+			}
 		} catch (error) {
 			console.error(error);
 			return {
