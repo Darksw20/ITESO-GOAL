@@ -17,24 +17,32 @@ export default {
 		}
 	},
 	find: async (id?: number) => {
-		if (id) {
-			const team = await Team.findByPk(id);
-
-			if (!team) {
+		try {
+			if (id) {
+				const team = await Team.findByPk(id);
+				if (!team) {
+					return {
+						error: "Team not found",
+						id
+					};
+				}
 				return {
-					error: "Team not found",
-					id
+					team: team,
 				};
 			}
 
 			return {
-				team: team,
+				teams: await Team.findAll(),
+			};
+			
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "Error finding team",
 			};
 		}
 
-		return {
-			teams: await Team.findAll(),
-		};
+
 	},
 	update: async (id: number, name?: string) => {
 		try {

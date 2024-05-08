@@ -7,28 +7,26 @@ import { CostExplorer } from "aws-sdk";
 export default {
 	async create(req: Request, res: Response) {
 		const { name, start_date, end_date, ubication, allowed_number } = req.body;
-
-		if (!name) {
-			return res.status(400).json({ message: "Name is requiered" });
-		}
-
-		if (!start_date || !end_date) {
-			return res
-				.status(400)
-				.json({ message: "Start and End date are required" });
-		}
-
-		if (!ubication) {
-			return res.status(400).json({ message: "Ubication is required" });
-		}
-
-		if (!allowed_number) {
-			return res
-				.status(400)
-				.json({ message: "Number of players is requiered" });
-		}
-
 		try {
+			if (!name) {
+				return res.status(400).json({ message: "Name is requiered" });
+			}
+
+			if (!start_date || !end_date) {
+				return res
+					.status(400)
+					.json({ message: "Start and End date are required" });
+			}
+
+			if (!ubication) {
+				return res.status(400).json({ message: "Ubication is required" });
+			}
+
+			if (!allowed_number) {
+				return res
+					.status(400)
+					.json({ message: "Number of players is requiered" });
+			}
 			const response = await Event.create(
 				name,
 				start_date,
@@ -44,12 +42,11 @@ export default {
 	},
 	async get(req: Request, res: Response) {
 		const id = Number(req.params.id);
-
-		if (!id) {
-			return res.status(400).json({ message: "Id of event is required" });
-		}
-
 		try {
+			if (!id) {
+				return res.status(400).json({ message: "Id of event is required" });
+			}
+
 			const response = await Event.find(id);
 
 			if (response.error) return res.status(404).json(response);
@@ -237,4 +234,26 @@ export default {
 			return res.status(500).json({ message: err.message });
 		}
 	},
+	async endEvent(req: Request, res: Response) {
+		const { eventId } = req.body;
+
+		try {
+			const response = await Event.update(
+				eventId,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				undefined,
+				'Y'
+			);
+
+			if (response.error) return res.status(404).json(response);
+
+			return res.json(response);
+		} catch (err: any) {
+			console.log(err);
+			return res.status(500).json({ message: err.message });
+		}
+	}
 };
