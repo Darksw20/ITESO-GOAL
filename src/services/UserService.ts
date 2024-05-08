@@ -60,10 +60,8 @@ export default {
 						['start_date', 'ASC']
 					]
 				})
-
-				console.log("matches", matches)
 				
-				if(matches){
+				if(matches.length>0){
 					const matchId = matches[0].dataValues.id
 					const court = await Court.findByPk(matches[0].dataValues.fk_court, {
 						attributes: ['place']

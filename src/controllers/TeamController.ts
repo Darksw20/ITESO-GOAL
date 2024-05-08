@@ -73,6 +73,7 @@ export default {
 			if (!id) {
 				return res.status(400).json({ message: "Id of team is required" });
 			}
+
 			const team = await Team.delete(id);
 			return res.json(team);
 		} catch (err: any) {
@@ -98,10 +99,8 @@ export default {
 		}
 	},
 	async addMembers(req: Request, res: Response) {
-		//TODO: Check that the
-
-		const teamId = Number(req.params.id);
-		const userIds: number[] = req.body.members;
+		const code = req.params.id;
+		const userId = req.body.members;
 		const errors: string[] = [];
 		try {
 			if (
@@ -117,27 +116,33 @@ export default {
 					errors.push("User Ids are required");
 				}
 
-				if (errors.length > 0) {
-					return res.status(400).json({ errors });
-				}
+		try {
+			if (!code) {
+				errors.push("Team Id is required");
 			}
-		
-			const team = await Team.find(teamId);
+			if (!userId) {
+				errors.push("User Ids are required");
+			}
+			
+			const team = await Team.find(code, "code");
 			if (team.error) {
-				return res.status(500).json({ message: team.error });
+				return res.status(400).json({ message: team.error });
 			}
-			userIds.map(async (userId) => {
-				const user = await User.find(userId);
-				if (user.error) {
-					errors.push(`User with ID ${userId} not found`);
-					return;
-				}
 
-				const teamUser = await TeamUser.create(userId, teamId, userIds.length);
-				if (teamUser.error) {
-					errors.push(teamUser.error);
-				}
-			});
+			const user = await User.find(userId);
+			if (user.error) {
+				errors.push(`User with ID ${userId} not found`);
+			}
+
+			if (errors.length > 0) {
+				return res.status(400).json({ errors });
+			}
+			console.log("1-----------")
+			const teamUser = await TeamUser.create(userId, Number(team.team?.dataValues.id), 1);
+			if (teamUser.error) {
+				errors.push(teamUser.error);
+			}
+			console.log("2-----------")
 
 			if (errors.length > 0) {
 				return res.status(404).json({ errors });

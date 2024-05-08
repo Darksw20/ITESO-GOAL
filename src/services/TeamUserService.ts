@@ -1,12 +1,41 @@
 import UserTeam from "../models/UserTeam";
 import Match from "../models/Match";
 import Event from "../models/Event";
+import { error } from "console";
 
 export default {
 	create: async (userId: number, teamId: number, teamMembers: number) => {
 		try {
+			if (!teamId){
+				return{
+					error: "Team id is required"
+				}
+			}
+			if (!userId){
+				return{
+					error: "User id is required"
+				}
+			}
+			if (!teamMembers){
+				return{
+					error: "Number of members is required"
+				}
+			}
+			
 			const numMembers = await UserTeam.findAll({ where: { fk_team: teamId } });
+			if(!numMembers){
+				return{
+					error: "Error finding team"
+				}
+			}
+			
 			const localTeams = await Match.findAll({ where: { fk_local: teamId } });
+			if(!localTeams){
+				return{
+					error: "error finding match"
+				}
+			}
+			
 			for (const match of localTeams) {
 				const eventLocal = await Event.findByPk(match.dataValues.fk_event);
 				if (
@@ -28,9 +57,12 @@ export default {
 				}
 			}
 
-			const visitorTeams = await UserTeam.findAll({
-				where: { fk_team: teamId },
-			});
+			const visitorTeams = await Match.findAll({where: { fk_visitor: teamId } });
+			if(!visitorTeams){
+				return{
+					error: "error finding match"
+				}
+			}
 			for (const match of visitorTeams) {
 				const eventVisitor = await Event.findByPk(match.dataValues.fk_event);
 				if (
@@ -42,7 +74,6 @@ export default {
 						error: `User ${userId} not added, exceeds maximum players`,
 					};
 				}
-
 				const visitorTeam = await UserTeam.findAll({
 					where: { fk_user: userId, fk_team: match.dataValues.fk_local },
 				});
@@ -52,15 +83,13 @@ export default {
 					};
 				}
 			}
-
 			const userTeam = await UserTeam.create({
 				fk_user: userId,
 				fk_team: teamId,
 			});
 
 			return {
-				id: userTeam.id,
-				userTeam: userTeam,
+				userTeam: userTeam
 			};
 		} catch (e) {
 			console.error(e);
