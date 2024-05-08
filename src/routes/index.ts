@@ -160,6 +160,22 @@ router.get("/user/:id", authUser, UserController.get);
  *        description: User found
  */
 
+// get User info
+router.get("/user", authUser, UserController.list);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  get:
+ *    summary: Get User information
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - User
+ *    responses:
+ *      200:
+ *        description: User found
+ */
+
 // modify User info
 router.patch("/user/:id", authUser, UserController.update);
 /**
@@ -421,6 +437,22 @@ router.get("/team/:id", authUser, TeamController.get);
  *        description: User created succesfully
  */
 
+// get Team Information
+router.get("/team", authUser, TeamController.list);
+/**
+ * @swagger
+ * /api/team/:id:
+ *  get:
+ *    summary: Get team details
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Team
+ *    responses:
+ *      200:
+ *        description: User created succesfully
+ */
+
 // modify Team
 router.patch("/team/:id", authUser, TeamController.update);
 /**
@@ -464,6 +496,22 @@ router.delete("/team/:id/members", authUser, TeamController.deleteMember);
  *      - apiAuth: []
  *    tags:
  *      - Team
+ *    responses:
+ *      200:
+ *        description: User created succesfully
+ */
+
+// register Match
+router.get("/match", authUser, MatchController.list);
+/**
+ * @swagger
+ * /api/match:
+ *  post:
+ *    summary: Create new watch
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Match
  *    responses:
  *      200:
  *        description: User created succesfully
@@ -551,6 +599,22 @@ router.post("/court", authUser, CourtController.create);
 
 // get Court info
 router.get("/court/:id", authUser, CourtController.get);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  get:
+ *    summary: Get Court information
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Court
+ *    responses:
+ *      200:
+ *        description: Court found
+ */
+
+// get Court info
+router.get("/court", authUser, CourtController.list);
 /**
  * @swagger
  * /api/user/:id:

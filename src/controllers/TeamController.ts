@@ -14,8 +14,8 @@ export default {
 			if (!eventId) {
 				return res.status(400).json({ message: "Event Id is required" });
 			}
-		
-			const team = await Team.create(name,eventId);
+
+			const team = await Team.create(name, eventId);
 			return res.json(team);
 		} catch (err: any) {
 			console.log(err);
@@ -120,7 +120,11 @@ export default {
 			if (errors.length > 0) {
 				return res.status(400).json({ errors });
 			}
-			const teamUser = await TeamUser.create(userId, Number(team?.team?.dataValues.id), 1);
+			const teamUser = await TeamUser.create(
+				userId,
+				Number(team?.team?.dataValues.id),
+				1
+			);
 			if (teamUser.error) {
 				errors.push(teamUser.error);
 			}
@@ -154,7 +158,7 @@ export default {
 					return res.status(400).json({ message: "User Ids are requiered" });
 				}
 			}
-		
+
 			const team = await Team.find(teamId);
 			if (!team) {
 				return res.status(404).send("Team not found");
