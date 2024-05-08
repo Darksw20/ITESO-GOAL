@@ -4,14 +4,12 @@ import Court from "../services/CourtService";
 export default {
 	async create(req: Request, res: Response) {
 		const { place, status } = req.body;
-
-		if (
-			!place || !status
-		) {
-			return res.status(400).json({ message: "All fields are required" });
-		}
-
 		try {
+			if (
+				!place || !status
+			) {
+				return res.status(400).json({ message: "All fields are required" });
+			}
 			const court = await Court.create(
 				place,
 				status
@@ -24,12 +22,11 @@ export default {
 	},
 	async get(req: Request, res: Response) {
 		const id = Number(req.params.id);
-
-		if (!id) {
-			return res.status(400).json({ message: "Id of court is required" });
-		}
-
 		try {
+			if (!id) {
+				return res.status(400).json({ message: "Id of court is required" });
+			}
+			
 			const court = await Court.find(id);
 
 			if (court.error) return res.status(404).json(court);
