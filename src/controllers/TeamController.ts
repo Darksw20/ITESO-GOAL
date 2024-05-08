@@ -44,9 +44,9 @@ export default {
 	},
 	async list(req: Request, res: Response) {
 		try {
-			const teams = await Team.find();
+			const teams = await Team.list();
 
-			return res.json(teams);
+			return res.json({ teams });
 		} catch (err: any) {
 			console.log(err);
 			return res.status(500).json({ message: err.message });

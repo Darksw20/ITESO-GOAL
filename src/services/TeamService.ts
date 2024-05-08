@@ -3,24 +3,25 @@ import Team from "../models/Team";
 import { error } from "console";
 import { where } from "sequelize";
 
-const generateCode = (length: integer) =>{
-	const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-	let result = '';
+const generateCode = (length: integer) => {
+	const characters =
+		"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+	let result = "";
 	const charactersLength = characters.length;
 	for (let i = 0; i < length; i++) {
-	  result += characters.charAt(Math.floor(Math.random() * charactersLength));
+		result += characters.charAt(Math.floor(Math.random() * charactersLength));
 	}
 	return result;
-}
+};
 
 export default {
 	create: async (name: string, eventId: number) => {
 		try {
-			const code = generateCode(10)
+			const code = generateCode(10);
 			const team = await Team.create({
 				name,
 				fk_event: eventId,
-				code
+				code,
 			});
 
 			return team;
@@ -33,35 +34,35 @@ export default {
 	},
 	find: async (value?: any, column?: string) => {
 		try {
-			if(!column){
+			if (!column) {
 				if (value) {
-				const team = await Team.findByPk(value);
+					const team = await Team.findByPk(value);
 
-				if (!team) {
+					if (!team) {
+						return {
+							error: "Team not found",
+							value,
+						};
+					}
+
 					return {
-					error: "Team not found",
-					value
+						team: team,
 					};
-				}
-
-				return {
-					team: team,
-				};
 				}
 			} else {
 				if (value) {
-				const team = await Team.findOne({where: {code: value}});
+					const team = await Team.findOne({ where: { code: value } });
 
-				if (!team) {
+					if (!team) {
+						return {
+							error: "Team not found",
+							value,
+						};
+					}
+
 					return {
-					error: "Team not found",
-					value
+						team: team,
 					};
-				}
-
-				return {
-					team: team,
-				};
 				}
 			}
 		} catch (e) {
@@ -70,8 +71,18 @@ export default {
 				error: "Error finding team",
 			};
 		}
-				
-		
+	},
+	list: async () => {
+		try {
+			const teams = await Team.findAll();
+
+			return teams;
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "Error listing teams",
+			};
+		}
 	},
 	update: async (id: number, name?: string) => {
 		try {
