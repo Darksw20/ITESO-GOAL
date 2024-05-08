@@ -103,47 +103,27 @@ export default {
 		const userId = req.body.members;
 		const errors: string[] = [];
 		try {
-			if (
-				!teamId ||
-				!userIds ||
-				!Array.isArray(userIds) ||
-				userIds.length === 0
-			) {
-				if (!teamId) {
-					errors.push("Team Id is required");
-				}
-				if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
-					errors.push("User Ids are required");
-				}
-
-		try {
 			if (!code) {
 				errors.push("Team Id is required");
 			}
 			if (!userId) {
 				errors.push("User Ids are required");
 			}
-			
 			const team = await Team.find(code, "code");
-			if (team.error) {
+			if (team?.error) {
 				return res.status(400).json({ message: team.error });
 			}
-
 			const user = await User.find(userId);
 			if (user.error) {
 				errors.push(`User with ID ${userId} not found`);
 			}
-
 			if (errors.length > 0) {
 				return res.status(400).json({ errors });
 			}
-			console.log("1-----------")
-			const teamUser = await TeamUser.create(userId, Number(team.team?.dataValues.id), 1);
+			const teamUser = await TeamUser.create(userId, Number(team?.team?.dataValues.id), 1);
 			if (teamUser.error) {
 				errors.push(teamUser.error);
 			}
-			console.log("2-----------")
-
 			if (errors.length > 0) {
 				return res.status(404).json({ errors });
 			}
