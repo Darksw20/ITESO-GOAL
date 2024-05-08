@@ -22,23 +22,30 @@ export default {
 		}
 	},
 	find: async (id?: number) => {
-		if (id) {
-			const court = await Court.findByPk(id);
+		try {
+			if (id) {
+				const court = await Court.findByPk(id);
 
-			if (!court) {
+				if (!court) {
+					return {
+						error: "Court not found",
+					};
+				}
+
 				return {
-					error: "Court not found",
+					court: court,
 				};
 			}
 
 			return {
-				court: court,
+				courts: await Court.findAll(),
+			};
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "Court not created",
 			};
 		}
-
-		return {
-			courts: await Court.findAll(),
-		};
 	},
 	update: async (
 		id: number,

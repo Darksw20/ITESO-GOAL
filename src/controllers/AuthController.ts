@@ -12,14 +12,13 @@ const isValidDate = (dateString: string) => {
 export default {
 	async login(req: Request, res: Response) {
 		const { email, password } = req.body;
-
-		if (!email || !password) {
-			return res
-				.status(400)
-				.json({ message: "Email and password are required" });
-		}
-
 		try {
+			if (!email || !password) {
+				return res
+					.status(400)
+					.json({ message: "Email and password are required" });
+			}
+		
 			const response = await Auth.login(email, password);
 
 			if (response.error) {
@@ -34,22 +33,21 @@ export default {
 	},
 	async register(req: Request, res: Response) {
 		const { email, password, first_name, last_name, birthday } = req.body;
-
-		if (!email || !password || !first_name || !last_name || !birthday) {
-			return res.status(400).json({ message: "All fields are required" });
-		}
-
-		if (password.length < 6) {
-			return res
-				.status(400)
-				.json({ message: "Password must be at least 6 characters long" });
-		}
-
-		if (!isValidDate(birthday)) {
-			return res.status(400).json({ message: "Birthday is not a valid date" });
-		}
-
 		try {
+			if (!email || !password || !first_name || !last_name || !birthday) {
+				return res.status(400).json({ message: "All fields are required" });
+			}
+
+			if (password.length < 6) {
+				return res
+					.status(400)
+					.json({ message: "Password must be at least 6 characters long" });
+			}
+
+			if (!isValidDate(birthday)) {
+				return res.status(400).json({ message: "Birthday is not a valid date" });
+			}
+			
 			const response = await Auth.register(
 				email,
 				password,

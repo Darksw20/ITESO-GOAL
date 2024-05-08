@@ -32,41 +32,46 @@ export default {
 		}
 	},
 	find: async (value?: any, column?: string) => {
-		if(!column){
-			if (value) {
-				const team = await Team.findByPk(value);
+		try {
+      if(!column){
+        if (value) {
+          const team = await Team.findByPk(value);
 
-				if (!team) {
-					return {
-						error: "Team not found",
-						value
-					};
-				}
+          if (!team) {
+            return {
+              error: "Team not found",
+              value
+            };
+          }
 
-				return {
-					team: team,
-				};
-			}
-		} else {
-			if (value) {
-				const team = await Team.findOne({where: {code: value}});
+          return {
+            team: team,
+          };
+        }
+      } else {
+        if (value) {
+          const team = await Team.findOne({where: {code: value}});
 
-				if (!team) {
-					return {
-						error: "Team not found",
-						value
-					};
-				}
+          if (!team) {
+            return {
+              error: "Team not found",
+              value
+            };
+          }
 
-				return {
-					team: team,
-				};
-			}
+          return {
+            team: team,
+          };
+        }
+			
+		} catch (e) {
+			console.error(e);
+			return {
+				error: "Error finding team",
+			};
 		}
 
-		return {
-			teams: await Team.findAll(),
-		};
+
 	},
 	update: async (id: number, name?: string) => {
 		try {

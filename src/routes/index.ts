@@ -313,7 +313,23 @@ router.get("/event/:id/teams", authUser, EventController.getTeams);
 router.post("/event/matches", authUser, EventController.startEvent);
 /**
  * @swagger
- * /api/event/:id/matches:
+ * /api/event/matches:
+ *  get:
+ *    summary: Obtain matches from event
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - Event
+ *    responses:
+ *      200:
+ *        description: Matches found
+ */
+
+// end Matches per event
+router.post("/event/finishevent", authUser, EventController.endEvent);
+/**
+ * @swagger
+ * /api/event/finishevent:
  *  get:
  *    summary: Obtain matches from event
  *    security:

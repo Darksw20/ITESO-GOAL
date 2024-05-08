@@ -73,7 +73,7 @@ export default {
 			if (!id) {
 				return res.status(400).json({ message: "Id of team is required" });
 			}
-		
+
 			const team = await Team.delete(id);
 			return res.json(team);
 		} catch (err: any) {
@@ -102,6 +102,19 @@ export default {
 		const code = req.params.id;
 		const userId = req.body.members;
 		const errors: string[] = [];
+		try {
+			if (
+				!teamId ||
+				!userIds ||
+				!Array.isArray(userIds) ||
+				userIds.length === 0
+			) {
+				if (!teamId) {
+					errors.push("Team Id is required");
+				}
+				if (!userIds || !Array.isArray(userIds) || userIds.length === 0) {
+					errors.push("User Ids are required");
+				}
 
 		try {
 			if (!code) {
