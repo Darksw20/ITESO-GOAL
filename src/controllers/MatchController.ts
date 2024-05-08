@@ -57,9 +57,6 @@ export default {
 	async get(req: Request, res: Response) {
 		const id = Number(req.params.id);
 		try {
-			if (!id) {
-				return res.status(400).json({ message: "Id of match is required" });
-			}
 		
 			const match = await Match.find(id);
 
