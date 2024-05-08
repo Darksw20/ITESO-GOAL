@@ -814,63 +814,72 @@ module.exports = {
         "name": "Team Forward Research Representative",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:34",
-        "updatedAt": "2024-05-02 00:17:34"
+        "updatedAt": "2024-05-02 00:17:34",
+        "code": "978hJ67"
       },
       {
         "id": 2,
         "name": "Team Central Accountability Assistant",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:35",
-        "updatedAt": "2024-05-02 00:17:35"
+        "updatedAt": "2024-05-02 00:17:35",
+        "code": "kio90yg"
       },
       {
         "id": 3,
         "name": "Team National Brand Agent",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:36",
-        "updatedAt": "2024-05-02 00:17:36"
+        "updatedAt": "2024-05-02 00:17:36",
+        "code": "Mi8i7VB"
       },
       {
         "id": 4,
         "name": "Team Chief Identity Consultant",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:37",
-        "updatedAt": "2024-05-02 00:17:37"
+        "updatedAt": "2024-05-02 00:17:37",
+        "code": "jk978tg"
       },
       {
         "id": 5,
         "name": "Team District Applications Director",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:38",
-        "updatedAt": "2024-05-02 00:17:38"
+        "updatedAt": "2024-05-02 00:17:38",
+        "code": "JKu78FGG"
       },
       {
         "id": 6,
         "name": "Team Direct Research Director",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:38",
-        "updatedAt": "2024-05-02 00:17:38"
+        "updatedAt": "2024-05-02 00:17:38",
+        "code": "HgVYU5"
       },
       {
         "id": 7,
         "name": "Team Regional Web Designer",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:39",
-        "updatedAt": "2024-05-02 00:17:39"
+        "updatedAt": "2024-05-02 00:17:39",
+        "code": "Skqi23"
       },
       {
         "id": 8,
         "name": "Team National Configuration Associate",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:40",
-        "updatedAt": "2024-05-02 00:17:40"
+        "updatedAt": "2024-05-02 00:17:40",
+        "code": "JAIiHY1"
       },
       {
         "id": 9,
         "name": "Team Lead Integration Liaison",
         "fk_event": 1,
         "createdAt": "2024-05-02 00:17:42",
-        "updatedAt": "2024-05-02 00:17:42"
+        "updatedAt": "2024-05-02 00:17:42",
+        "code": "kHB896"
       }
     ], {});
     await queryInterface.bulkInsert('user_team', [
