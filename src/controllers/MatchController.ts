@@ -30,10 +30,10 @@ export default {
 				return res.status(400).json({ message: 'Teams Id required' });
 			} else {
 				const team1 = await Team.find(fk_local);
-				if (team1.error) return res.status(404).json(team1);
+				if (team1?.error) return res.status(404).json(team1);
 
 				const team2 = await Team.find(fk_visitor);
-				if (team2.error) return res.status(404).json(team2);
+				if (team2?.error) return res.status(404).json(team2);
 			}
 
 			if(!start_date || !end_date) {

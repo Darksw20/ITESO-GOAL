@@ -149,7 +149,7 @@ export default {
 
 			for (const team of teams){
 				const teamRes = await Team.find(team)
-				if (teamRes.error) {
+				if (teamRes?.error) {
 					errors.push(team,": ",teamRes.error);
 				}
 			}
