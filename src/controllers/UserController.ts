@@ -115,4 +115,15 @@ export default {
 			return res.status(500).json({ message: err.message });
 		}
 	},
+	async getEvents(req: Request, res: Response) {
+		const userId = Number(req.params.id);
+
+		try {
+			const response = await User.getEvents(userId);
+			return res.json(response);
+		} catch (err: any) {
+			console.log(err);
+			return res.status(500).json({ message: err.message });
+		}
+	},
 };

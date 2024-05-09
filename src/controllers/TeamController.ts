@@ -100,41 +100,54 @@ export default {
 	},
 	async addMembers(req: Request, res: Response) {
 		const code = req.params.id;
-		const userId = req.body.members;
+		const userIds = req.body.members;
 		const errors: string[] = [];
+
 		try {
 			if (!code) {
 				errors.push("Team Id is required");
 			}
-			if (!userId) {
+			if (!userIds || !userIds.length) {
 				errors.push("User Ids are required");
 			}
+
 			const team = await Team.find(code, "code");
 			if (team?.error) {
 				return res.status(400).json({ message: team.error });
 			}
-			const user = await User.find(userId);
-			if (user.error) {
-				errors.push(`User with ID ${userId} not found`);
-			}
+
+			const users = await Promise.all(
+				userIds.map(async (userId: any) => {
+					const user = await User.find(userId);
+					if (user.error) {
+						errors.push(`User with ID ${userId} not found`);
+					}
+					return user;
+				})
+			);
+
 			if (errors.length > 0) {
 				return res.status(400).json({ errors });
 			}
-			const teamUser = await TeamUser.create(
-				userId,
-				Number(team?.team?.dataValues.id),
-				1
+
+			const teamId = team?.team?.dataValues.id;
+
+			await Promise.all(
+				userIds.map(async (userId: any) => {
+					const teamUser = await TeamUser.create(userId, Number(teamId), 1);
+					if (teamUser.error) {
+						errors.push(teamUser.error);
+					}
+				})
 			);
-			if (teamUser.error) {
-				errors.push(teamUser.error);
-			}
+
 			if (errors.length > 0) {
 				return res.status(404).json({ errors });
 			}
 
 			return res.status(200).json({ message: "Members added successfully" });
 		} catch (err: any) {
-			console.log(err);
+			console.error(err);
 			return res.status(500).json({ message: err.message });
 		}
 	},

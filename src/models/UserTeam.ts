@@ -3,7 +3,7 @@ import User from "./User";
 import Team from "./Team";
 
 @Table({ tableName: "user_team" })
-class Court extends Model {
+class UserTeam extends Model {
 	@ForeignKey(() => User)
 	@Column({ allowNull: false })
 	fk_user!: number;
@@ -11,6 +11,7 @@ class Court extends Model {
 	@ForeignKey(() => Team)
 	@Column({ allowNull: false })
 	fk_team!: number;
+	static model: any;
 }
 
-export default Court;
+export default UserTeam;

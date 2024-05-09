@@ -34,37 +34,29 @@ export default {
 	},
 	find: async (value?: any, column?: string) => {
 		try {
-			if (!column) {
-				if (value) {
-					const team = await Team.findByPk(value);
-
-					if (!team) {
-						return {
-							error: "Team not found",
-							value,
-						};
-					}
-
-					return {
-						team: team,
-					};
-				}
-			} else {
-				if (value) {
-					const team = await Team.findOne({ where: { code: value } });
-
-					if (!team) {
-						return {
-							error: "Team not found",
-							value,
-						};
-					}
-
-					return {
-						team: team,
-					};
-				}
+			if (!value) {
+				return {
+					error: "Value not provided",
+				};
 			}
+
+			let team;
+			if (!column) {
+				team = await Team.findByPk(value);
+			} else {
+				team = await Team.findOne({ where: { [column]: value } });
+			}
+
+			if (!team) {
+				return {
+					error: "Team not found",
+					value,
+				};
+			}
+
+			return {
+				team: team,
+			};
 		} catch (e) {
 			console.error(e);
 			return {
