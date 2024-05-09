@@ -1,4 +1,5 @@
 import { Router } from "express";
+import { emitBroadcast } from "../middlewares/RealTime";
 
 import passport from "passport";
 
@@ -208,7 +209,7 @@ router.get("/user/:id/event", authUser, UserController.getEvents);
  */
 
 // modify User info
-router.patch("/user/:id", authUser, UserController.update);
+router.patch("/user/:id", authUser, UserController.update, emitBroadcast);
 /**
  * @swagger
  * /api/user/:id:
@@ -228,7 +229,8 @@ router.patch(
 	"/user/:id/profile-image",
 	authUser,
 	upload.single("img"),
-	UserController.uploadImage
+	UserController.uploadImage,
+	emitBroadcast
 );
 /**
  * @swagger
@@ -437,7 +439,12 @@ router.get("/team/:id/members", authUser, TeamController.getMembers);
  */
 
 // add Team Members
-router.post("/team/:id/members", authUser, TeamController.addMembers);
+router.post(
+	"/team/:id/members",
+	authUser,
+	TeamController.addMembers,
+	emitBroadcast
+);
 /**
  * @swagger
  * /api/team/:id/members:
@@ -485,7 +492,7 @@ router.get("/team", authUser, TeamController.list);
  */
 
 // modify Team
-router.patch("/team/:id", authUser, TeamController.update);
+router.patch("/team/:id", authUser, TeamController.update, emitBroadcast);
 /**
  * @swagger
  * /api/team/:id:
@@ -517,7 +524,12 @@ router.delete("/team/:id", authUser, TeamController.delete);
  */
 
 // delete Team Member
-router.delete("/team/:id/members", authUser, TeamController.deleteMember);
+router.delete(
+	"/team/:id/members",
+	authUser,
+	TeamController.deleteMember,
+	emitBroadcast
+);
 /**
  * @swagger
  * /api/team/:id/members:
@@ -581,7 +593,7 @@ router.get("/match/:id", authUser, MatchController.get);
  */
 
 // modify Match
-router.patch("/match/:id", authUser, MatchController.update);
+router.patch("/match/:id", authUser, MatchController.update, emitBroadcast);
 /**
  * @swagger
  * /api/match/:id:
@@ -661,7 +673,7 @@ router.get("/court", authUser, CourtController.list);
  */
 
 // modify Court info
-router.patch("/court/:id", authUser, CourtController.update);
+router.patch("/court/:id", authUser, CourtController.update, emitBroadcast);
 /**
  * @swagger
  * /api/user/:id:
