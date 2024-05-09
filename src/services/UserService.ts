@@ -5,6 +5,226 @@ import Event from "../models/Event";
 import UserTeam from "../models/UserTeam";
 import { Op, Sequelize } from "sequelize";
 import Team from "../models/Team";
+import { get } from "http";
+
+const getWins = async (id: number) => {
+	const user = await User.findByPk(id);
+	if (!user) {
+		return {
+			error: "User not found",
+		};
+	}
+	const teams = await Team.findAll({
+		include: [
+			{
+				model: User,
+				as: "users",
+				where: { id: user.id },
+				through: { attributes: [] },
+			},
+		],
+	});
+
+	var tempArray: number[] = [];
+
+	if (teams.length === 0) {
+		return {
+			error: "User not enrolled in a team",
+		};
+	}
+
+	for (const team of teams) {
+		tempArray.push(team.dataValues.id);
+	}
+
+	const matchesLocalWon = await Match.findAll({
+		where: {
+			fk_local: tempArray,
+			score_local: { [Op.gt]: Sequelize.col("score_visitor") },
+		},
+	});
+
+	const matchesVisitorWon = await Match.findAll({
+		where: {
+			fk_visitor: tempArray,
+			score_visitor: { [Op.gt]: Sequelize.col("score_local") },
+		},
+	});
+
+	const won = matchesLocalWon.length + matchesVisitorWon.length;
+
+	return won;
+};
+
+const getLoses = async (id: number) => {
+	const user = await User.findByPk(id);
+	if (!user) {
+		return {
+			error: "User not found",
+		};
+	}
+	const teams = await Team.findAll({
+		include: [
+			{
+				model: User,
+				as: "users",
+				where: { id: user.id },
+				through: { attributes: [] },
+			},
+		],
+	});
+
+	var tempArray: number[] = [];
+
+	if (teams.length === 0) {
+		return {
+			error: "User not enrolled in a team",
+		};
+	}
+
+	for (const team of teams) {
+		tempArray.push(team.dataValues.id);
+	}
+
+	const matchesLocalLost = await Match.findAll({
+		where: {
+			fk_local: tempArray,
+			score_visitor: { [Op.gt]: Sequelize.col("score_local") },
+		},
+	});
+
+	const matchesVisitorLost = await Match.findAll({
+		where: {
+			fk_visitor: tempArray,
+			score_local: { [Op.gt]: Sequelize.col("score_visitor") },
+		},
+	});
+
+	const lost = matchesLocalLost.length + matchesVisitorLost.length;
+
+	return lost;
+};
+
+const getGoals = async (id: number) => {
+	const user = await User.findByPk(id);
+	if (!user) {
+		return {
+			error: "User not found",
+		};
+	}
+	const teams = await Team.findAll({
+		include: [
+			{
+				model: User,
+				as: "users",
+				where: { id: user.id },
+				through: { attributes: [] },
+			},
+		],
+	});
+
+	var tempArray: number[] = [];
+
+	if (teams.length === 0) {
+		return {
+			error: "User not enrolled in a team",
+		};
+	}
+
+	for (const team of teams) {
+		tempArray.push(team.dataValues.id);
+	}
+
+	const matchesLocal = await Match.findAll({
+		attributes: [
+			[Sequelize.fn("SUM", Sequelize.col("goals_local")), "total_score"],
+		],
+		where: { fk_local: tempArray },
+	});
+
+	const matchesVisitor = await Match.findAll({
+		attributes: [
+			[Sequelize.fn("SUM", Sequelize.col("goals_visitor")), "total_score"],
+		],
+		where: { fk_visitor: tempArray },
+	});
+
+	const goals =
+		Number(matchesLocal[0].dataValues.total_score || 0) +
+		Number(matchesVisitor[0].dataValues.total_score || 0);
+
+	return goals;
+};
+
+const getNextMatch = async (id: number) => {
+	const user = await User.findByPk(id);
+
+	if (!user) {
+		return {
+			error: "User not found",
+		};
+	}
+
+	const userTeam = await UserTeam.findAll({
+		where: { fk_user: id },
+	});
+
+	var tempArray: number[] = [];
+
+	if (userTeam.length === 0) {
+		return {
+			error: "User not enrolled in a team",
+		};
+	}
+
+	for (const team of userTeam) {
+		tempArray.push(team.dataValues.fk_team);
+	}
+	const matches = await Match.findAll({
+		where: {
+			[Op.or]: [{ fk_local: tempArray }, { fk_visitor: tempArray }],
+		},
+		order: [["start_date", "ASC"]],
+	});
+
+	if (matches.length === 0) {
+		return {
+			error: "No matches found",
+		};
+	}
+
+	const matchId = matches[0].dataValues.id;
+	const court = await Court.findByPk(matches[0].dataValues.fk_court, {
+		attributes: ["place"],
+	});
+	const StartTime = matches[0].dataValues.start_date;
+
+	const localTeam = await Team.findByPk(matches[0].dataValues.fk_local, {
+		attributes: ["name", "id"],
+	});
+	const visitorTeam = await Team.findByPk(matches[0].dataValues.fk_visitor, {
+		attributes: ["name", "id"],
+	});
+
+	let next_match = "";
+
+	console.log("LOCAL", localTeam, tempArray);
+	console.log("Visitor", visitorTeam, tempArray);
+
+	if (localTeam && tempArray.includes(localTeam.id)) {
+		next_match = localTeam.dataValues.name;
+	}
+
+	if (visitorTeam && tempArray.includes(visitorTeam.id)) {
+		next_match = visitorTeam.dataValues.name;
+	}
+
+	return {
+		court: court?.dataValues.place,
+		start_time: StartTime,
+		next_match: next_match,
+	};
+};
 
 export default {
 	create: async (
@@ -250,5 +470,17 @@ export default {
 				error: "Error retrieving events",
 			};
 		}
+	},
+	getDashboard: async (id: number) => {
+		const { court, start_time, next_match } = await getNextMatch(id);
+
+		return {
+			wins: await getWins(id),
+			loses: await getLoses(id),
+			court: court,
+			start_time: start_time,
+			next_match: next_match,
+			goals: await getGoals(id),
+		};
 	},
 };

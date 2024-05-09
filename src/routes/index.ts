@@ -176,6 +176,21 @@ router.get("/user", authUser, UserController.list);
  *        description: User found
  */
 
+router.get("/user/:id/dashboard", authUser, UserController.getDashboard);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  get:
+ *    summary: Get User information
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - User
+ *    responses:
+ *      200:
+ *        description: User found
+ */
+
 // get User info
 router.get("/user/:id/event", authUser, UserController.getEvents);
 /**
