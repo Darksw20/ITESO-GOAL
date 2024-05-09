@@ -26,7 +26,7 @@ RUN mkdir -p /app/coverage-report
 RUN chmod -R 777 /app/coverage-report
 
 # Expose the port on which the application will run
-EXPOSE 8080
+EXPOSE 8000
 
 # Define the command to run the application
 CMD ["npm", "start"]
