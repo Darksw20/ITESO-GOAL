@@ -1,8 +1,10 @@
 import User from "../models/User";
 import Court from "../models/Court";
 import Match from "../models/Match";
+import Event from "../models/Event";
 import UserTeam from "../models/UserTeam";
-import { Op,Sequelize } from "sequelize";
+import { Op, Sequelize } from "sequelize";
+import Team from "../models/Team";
 
 export default {
 	create: async (
@@ -46,60 +48,80 @@ export default {
 			}
 
 			const userTeam = await UserTeam.findAll({
-				where: {fk_user: id}
-			})
+				where: { fk_user: id },
+			});
 
-			var tempArray: number[] = []
+			var tempArray: number[] = [];
 			if (userTeam) {
-				for (const team of userTeam){
-					tempArray.push(team.dataValues.fk_team)
-				} 
+				for (const team of userTeam) {
+					tempArray.push(team.dataValues.fk_team);
+				}
 				const matches = await Match.findAll({
-					where: { [Op.or]: [{ fk_local: tempArray }, { fk_visitor: tempArray }], },
-					order: [
-						['start_date', 'ASC']
-					]
-				})
-				
-				if(matches.length>0){
-					const matchId = matches[0].dataValues.id
+					where: {
+						[Op.or]: [{ fk_local: tempArray }, { fk_visitor: tempArray }],
+					},
+					order: [["start_date", "ASC"]],
+				});
+
+				if (matches.length > 0) {
+					const matchId = matches[0].dataValues.id;
 					const court = await Court.findByPk(matches[0].dataValues.fk_court, {
-						attributes: ['place']
-					})
-					const StartTime = matches[0].dataValues.start_date
+						attributes: ["place"],
+					});
+					const StartTime = matches[0].dataValues.start_date;
 
 					//Won Matches
 					const matchesLocalWon = await Match.findAll({
-						where: { fk_local: tempArray,  score_local: { [Op.gt]:  Sequelize.col('score_visitor')}}
-					})
+						where: {
+							fk_local: tempArray,
+							score_local: { [Op.gt]: Sequelize.col("score_visitor") },
+						},
+					});
 					const matchesVisitorWon = await Match.findAll({
-						where: { fk_visitor: tempArray, score_visitor: { [Op.gt]:  Sequelize.col('score_local')} }
-					})
-					const won = matchesLocalWon.length + matchesVisitorWon.length
+						where: {
+							fk_visitor: tempArray,
+							score_visitor: { [Op.gt]: Sequelize.col("score_local") },
+						},
+					});
+					const won = matchesLocalWon.length + matchesVisitorWon.length;
 
 					//Lost Matches
 					const matchesLocalLost = await Match.findAll({
-						where: { fk_local: tempArray,  score_visitor: { [Op.gt]:  Sequelize.col('score_local')}}
-					})
+						where: {
+							fk_local: tempArray,
+							score_visitor: { [Op.gt]: Sequelize.col("score_local") },
+						},
+					});
 					const matchesVisitorLost = await Match.findAll({
-						where: { fk_visitor: tempArray, score_local: { [Op.gt]:  Sequelize.col('score_visitor')} }
-					})
-					const lost = matchesLocalLost.length + matchesVisitorLost.length
+						where: {
+							fk_visitor: tempArray,
+							score_local: { [Op.gt]: Sequelize.col("score_visitor") },
+						},
+					});
+					const lost = matchesLocalLost.length + matchesVisitorLost.length;
 
 					//Team Goals
 					const matchesLocal = await Match.findAll({
 						attributes: [
-							[Sequelize.fn('SUM', Sequelize.col('goals_local')), 'total_score']
+							[
+								Sequelize.fn("SUM", Sequelize.col("goals_local")),
+								"total_score",
+							],
 						],
-						where: { fk_local: tempArray }
-					})
+						where: { fk_local: tempArray },
+					});
 					const matchesVisitor = await Match.findAll({
 						attributes: [
-							[Sequelize.fn('SUM', Sequelize.col('goals_visitor')), 'total_score']
+							[
+								Sequelize.fn("SUM", Sequelize.col("goals_visitor")),
+								"total_score",
+							],
 						],
-						where: { fk_visitor: tempArray }
-					})
-					const goals = Number(matchesLocal[0].dataValues.total_score || 0) + Number(matchesVisitor[0].dataValues.total_score || 0)
+						where: { fk_visitor: tempArray },
+					});
+					const goals =
+						Number(matchesLocal[0].dataValues.total_score || 0) +
+						Number(matchesVisitor[0].dataValues.total_score || 0);
 
 					return {
 						user: user,
@@ -108,13 +130,13 @@ export default {
 						StartTime,
 						won,
 						lost,
-						goals
+						goals,
 					};
 				}
 			} else {
 				return {
 					user: user,
-					interface: "Your not enrolled in a team"
+					interface: "Your not enrolled in a team",
 				};
 			}
 
@@ -183,6 +205,49 @@ export default {
 			console.error(e);
 			return {
 				error: "User not deleted",
+			};
+		}
+	},
+	getEvents: async (id: number) => {
+		try {
+			// Step 1: Find the user by its ID
+			const user = await User.findByPk(id);
+			if (!user) {
+				return {
+					error: "User not found",
+				};
+			}
+
+			// Step 2: Join Team table on fk_event
+			const teams = await Team.findAll({
+				include: [
+					{
+						model: User,
+						as: "users",
+						where: { id: user.id },
+						through: { attributes: [] }, // This ensures no additional attributes are retrieved from the UserTeam join table
+					},
+				],
+			});
+
+			// Step 3: Extract events from the teams
+			const events = teams.flatMap((team) => {
+				return team;
+			});
+
+			if (events.length === 0) {
+				return {
+					error: "No events found for the user",
+				};
+			}
+
+			return {
+				events,
+			};
+		} catch (error) {
+			console.error(error);
+			return {
+				error: "Error retrieving events",
 			};
 		}
 	},

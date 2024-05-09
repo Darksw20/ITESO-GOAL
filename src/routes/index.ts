@@ -176,6 +176,22 @@ router.get("/user", authUser, UserController.list);
  *        description: User found
  */
 
+// get User info
+router.get("/user/:id/event", authUser, UserController.getEvents);
+/**
+ * @swagger
+ * /api/user/:id:
+ *  get:
+ *    summary: Get User information
+ *    security:
+ *      - apiAuth: []
+ *    tags:
+ *      - User
+ *    responses:
+ *      200:
+ *        description: User found
+ */
+
 // modify User info
 router.patch("/user/:id", authUser, UserController.update);
 /**
